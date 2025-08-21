@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - GC Tech</title>
+  <!-- fixed path: use forward slashes -->
+  <link rel="stylesheet" href="contactus/contactus.css"/>
+</head>
+<body>
+  <!-- Navbar (unchanged) -->
+  <header class="navbar">
+    <img src="assets/images/Store Logo/logo.png" alt="GC Tech Logo" />
+    <nav>
+      <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Customize</a></li>
+        <li><a href="aboutus.html">About Us</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="intro">
+    <h1>Get in Touch</h1>
+    <p>We're here to help you bring your signage ideas to life. Whether you have a question, need a custom quote, or just want to learn more about our services, we'd love to hear from you. Let's create something amazing together!</p>
+  </section>
+
+  <!-- Main -->
+  <section class="form-section">
+    <div class="form-container">
+      
+      <!-- Contact Information -->
+      <div class="contact-info">
+        <h2>Contact Information</h2>
+        <p>Reach out to us through any of these convenient channels:</p>
+
+        <div class="info-item">
+          <h3>🏢 Main Office</h3>
+          <p>123 Main Street, Manila, Philippines</p>
+          <small>Our main office is located in the heart of Manila, easily accessible by public transport. We're open for walk-ins and consultations during business hours.</small>
+        </div>
+
+        <div class="info-item">
+          <h3>📞 Phone Numbers</h3>
+          <p>+63 912 345 6789 (Mobile)</p>
+          <p>+63 2 8123 4567 (Landline)</p>
+          <small>Available for calls and texts from 8 AM to 6 PM, Monday to Saturday. For urgent matters after hours, please text and we'll get back to you the next business day.</small>
+        </div>
+
+        <div class="info-item">
+          <h3>📧 Email Addresses</h3>
+          <p>info@gctechsignage.com (Inquiries)</p>
+          <small>We respond to all emails within 24 hours during business days. For faster response, please use the appropriate email address for your inquiry type.</small>
+        </div>
+
+        <div class="info-item">
+          <h3>🕒 Business Hours</h3>
+          <p>Monday - Saturday: 8:00 AM - 6:00 PM</p>
+          <p>Sunday: Closed</p>
+          <small>We're also closed on major Philippine holidays. Extended hours available for urgent projects by appointment.</small>
+        </div>
+
+        <div class="info-item">
+          <h3>🚚 Service Areas</h3>
+          <p>Dasmarinas Cavite & Surrounding Areas</p>
+          <small>We provide free delivery within Metro Manila for orders over ₱5,000. Nationwide shipping available with competitive rates.</small>
+        </div>
+
+        <div class="info-item">
+          <h3>💳 Payment Methods</h3>
+          <p>Cash • Bank Transfer • GCash • Installment Plans</p>
+          <small>We accept all major payment methods. Installment plans available for large orders. 50% deposit required to start production.</small>
+        </div>
+
+        <div class="social-section">
+          <h3>Follow Us</h3>
+          <div class="social-links">
+            <a href="#" title="Facebook" aria-label="Facebook">📘</a>
+            <a href="#" title="Messenger" aria-label="Messenger">💼</a>
+          </div>
+          <p>Stay updated with our latest projects and promotions on social media!</p>
+        </div>
+      </div>
+
+      <!-- Quotation Form -->
+      <div class="quotation">
+        <h2>Request a Quotation</h2>
+        <p>Fill out the form below and we'll get back to you with a personalized quote within 24 hours.</p>
+        
+        <form class="quotation-form" action="#" method="post" novalidate>
+          <div class="row">
+            <input type="text" name="full_name" placeholder="Full Name *" required>
+            <input type="email" name="email" placeholder="Email Address *" required>
+          </div>
+          
+          <div class="row">
+            <input type="tel" name="phone" placeholder="Phone Number *" required>
+            <select name="project_type" required>
+              <option value="">Project Type *</option>
+              <option value="led">LED Signage</option>
+              <option value="neon">Neon Signs</option>
+              <option value="acrylic">Acrylic Signage</option>
+              <option value="metal">Metal Signs</option>
+              <option value="vinyl">Vinyl Graphics</option>
+              <option value="digital">Digital Displays</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <input type="text" name="company" placeholder="Company Name (Optional)">
+            <select name="budget">
+              <option value="">Budget Range</option>
+              <option value="5000">Under ₱5,000</option>
+              <option value="10000">₱5,000 - ₱10,000</option>
+              <option value="25000">₱10,000 - ₱25,000</option>
+              <option value="50000">₱25,000 - ₱50,000</option>
+              <option value="100000">₱50,000 - ₱100,000</option>
+              <option value="more">Over ₱100,000</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <input type="text" name="dimensions" placeholder="Dimensions (L x W x H)">
+            <input type="date" name="deadline" placeholder="Deadline">
+          </div>
+
+          <div class="file-upload">
+            <label for="file-input">📎 Attach Reference Images or Design Files</label>
+            <input type="file" id="file-input" accept="image/*,.pdf,.ai,.psd" multiple>
+            <small>Accepted formats: JPG, PNG, PDF, AI, PSD (Max 10MB per file)</small>
+          </div>
+
+          <textarea name="details" placeholder="Describe your project in detail... Include information about materials, colors, installation location, special requirements, etc." rows="6" required></textarea>
+          
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" required>
+              I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>
+            </label>
+          </div>
+
+          <button type="submit">Submit Quotation Request</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+ <!-- FAQ -->
+  <section class="faq-section">
+    <div class="faq-container">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">1.</span> Do you offer custom signage designs?</button>
+        <div class="faq-answer">Yes! We create custom signage tailored to your specific needs and brand requirements. Our design team works with you from concept to completion.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">2.</span> What is your typical turnaround time?</button>
+        <div class="faq-answer">Standard signage projects take 3–5 business days from design approval to completion. Large or complex orders may take 1–2 weeks.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">3.</span> Do you provide delivery and installation?</button>
+        <div class="faq-answer">Yes! We offer professional delivery and installation services throughout Metro Manila and surrounding areas. Local deliveries are free for orders over ₱5,000.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">4.</span> What materials and technologies do you use?</button>
+        <div class="faq-answer">We use premium materials including acrylic, aluminum composite panels, PVC, LED modules, neon flex, vinyl graphics, and stainless steel.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">5.</span> Can I request design mockups before production?</button>
+        <div class="faq-answer">Absolutely! We provide detailed 3D mockups and digital previews so you can visualize exactly how your signage will look before we begin production.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">6.</span> Do you have minimum order requirements?</button>
+        <div class="faq-answer">No minimum orders! We cater to all clients whether you need a single sign for your small business or bulk orders for large corporations.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">7.</span> What payment terms do you offer?</button>
+        <div class="faq-answer">We accept cash, bank transfers, GCash, PayMaya, and all major credit cards. For large projects, we offer flexible payment terms with 50% deposit to start.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">8.</span> Do you provide maintenance services?</button>
+        <div class="faq-answer">Yes! We offer maintenance packages for LED signs, repairs for damaged signage, and cleaning services. We also provide warranty coverage.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">9.</span> Can you handle large corporate or multi-branch projects?</button>
+        <div class="faq-answer">Yes, we specialize in scaling our production and installation teams to handle large corporate accounts, nationwide rollouts, and multi-branch signage projects.</div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-question"><span class="faq-number">10.</span> Do you assist with permits or regulatory requirements?</button>
+        <div class="faq-answer">Absolutely. We can guide you through the permit application process for outdoor signage and ensure compliance with local government regulations.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer (unchanged) -->
+  <footer class="footer">
+    <p>&copy; 2025 GC Tech Signage. All rights reserved. | 
+      <a href="terms.html">Terms & Conditions</a> | 
+      <a href="privacy.html">Privacy Policy</a>
+    </p>
+  </footer>
+
+  <script src="contactus/contactus.js"></script>
+</body>
+</html>

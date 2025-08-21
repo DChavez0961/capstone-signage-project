@@ -1,0 +1,436 @@
+body {
+  margin: 0;
+  overflow: auto; /* ⬅ stops scrolling */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #fff;
+  line-height: 1.6;
+  height: 100vh;   /* ⬅ ensures body fits full viewport height */
+}
+
+/* === Navbar === */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  padding: 15px 5%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(255, 179, 71, 0.1);
+}
+
+.navbar .logo {
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffb347;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar ul {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar ul li a:hover {
+  background: #444;
+  color:  gold;
+  transform: translateY(-2px);
+}
+
+/* === Main Container === */
+.main-container {
+  background: url('../assets/images/background/main bg light mode.png') no-repeat center center/cover;
+  padding: 20px;
+  flex: 1;
+}
+
+.about-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+  padding-top: 30px;
+}
+
+.about-title img.about-logo {
+  height: 60px;
+  width: auto;
+}
+
+.about-title h2 {
+  font-size: 2rem;
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+/* === About Container === */
+.about-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 30px;
+}
+
+.about-section {
+  flex: 2;
+  padding: 50px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.about-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.about-section > * {
+  position: relative;
+  z-index: 2;
+}
+
+.about-content {
+  width: 100%;
+}
+
+.about-content h2 {
+  color: #d09b00;
+  padding: 10px;
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-content p {
+  padding: 10px;
+  font-size: 25px;
+  color: #000;
+  line-height: 1.8;
+  margin-bottom: 50px;
+  text-align: justify;
+}
+
+/* === Artist Card === */
+.artist-card {
+  flex: 1;
+  border-radius: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+}
+
+.profile-image {
+  width: 450px;
+  height: 700px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  border-radius: 15px;
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+}
+
+.artist-card h3 {
+  margin-top: 10px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #000;
+  text-shadow: 1px 5px 5px rgba(0, 0, 0, 0.9);
+}
+
+.artist-card p {
+  font-size: 27px;
+  margin: 5px 0;
+  font-style: italic;
+  color: #797979;
+}
+
+/* === Process Title === */
+.process-title {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding-top: 30px;
+  padding-left: 60px;
+  margin-bottom: 10px;
+}
+
+.process-title img.process-logo {
+  height: 70px;
+  width: auto;
+}
+
+.process-title h2 {
+  font-size: 2rem;
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+/* === Info Cards === */
+.info-cards {
+  display: flex;
+  padding: 25px;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 40px 30px;
+  flex: 1;
+  text-align: center;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-icon {
+  margin: 0 auto 20px;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: hue-rotate(30deg) saturate(1) brightness(1);
+}
+
+.card h4 {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000;
+  letter-spacing: 1px;
+}
+
+.card p {
+  font-size: 22px;
+  padding: 24px;
+  line-height: 1.9;
+  color: #000;
+  text-align: justify;
+}
+
+/* === Footer === */
+.footer {
+  text-align: center;
+  padding: 20px 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: #0f0f0f;  /* matches dark theme */
+  color: #bbb;
+  font-size: 14px;
+}
+.footer a {
+  color: #ffd60a;
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+  color: rgb(42, 143, 201);
+}
+
+/* === Process Cards === */
+.process-cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  min-height: 100vh;
+  z-index: 0;
+}
+
+.process-cards::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 40%),
+    url('../assets/images/background/main bg dark mode.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.process-box {
+  width: 100%;
+  display: flex;
+}
+
+.process-box.left {
+  justify-content: flex-start;
+}
+
+.process-box.right {
+  justify-content: flex-end;
+}
+
+.box-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  padding: 50px 50px;
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 0px 16px 16px 0px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  gap: 25px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.process-box.right .box-inner {
+  flex-direction: row-reverse;
+  border-radius: 16px 0px 0px 16px;
+}
+
+.box-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(104, 104, 104, 0.274);
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.icon {
+  width: 250px;
+  height: 250px;
+  flex-shrink: 0;
+}
+
+.box-content {
+  text-align: justify;
+}
+
+.box-content h3 {
+  font-size: 35px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow: 1px 5px 3px rgba(75, 75, 75, 0.9);
+}
+
+.box-content p {
+  font-size: 30px;
+  line-height: 1.8;
+  color: #fff;
+  max-width: 100%;
+  margin: 0 auto;
+  text-shadow: 1px 6px 5px rgba(87, 87, 87, 0.9);
+}
+
+.process-box.left .box-content {
+  margin-left: 0px;
+}
+
+.process-box.right .box-content {
+  margin-right: 0px;
+}
+
+/* === Responsive Design Here ===*/
+
+@media (max-width: 1024px) {
+  .about-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .about-section, .artist-card {
+    flex: none;
+  }
+  .info-cards {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar ul {
+    gap: 30px;
+  }
+  .about-section {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+  .about-content h2 {
+    font-size: 36px;
+  }
+  .profile-image {
+    width: 160px;
+    height: 250px;
+  }
+  .card {
+    padding: 30px 20px;
+  }
+  .footer-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .footer-section {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px;
+  }
+  .navbar ul {
+    gap: 15px;
+    font-size: 14px;
+  }
+  .about-content h2 {
+    font-size: 28px;
+  }
+  .main-container {
+    padding: 10px;
+  }
+}

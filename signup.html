@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="signup/signup.css" />
+</head>
+<body>
+
+  <!-- Navbar (unchanged) -->
+  <header class="navbar">
+    <img src="assets/images/Store Logo/logo.png" alt="GC Tech Logo" />
+    <nav>
+      <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Customize</a></li>
+        <li><a href="aboutus.html">About Us</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Wrapper -->
+  <main class="signup-wrapper">
+    <!-- Left panel (optional text) -->
+    <section class="image-section">
+      <div class="image-overlay">
+        <div class="overlay-content">
+          <h2>Create your account</h2>
+          <p>Customize products and track your orders with ease.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: Sign Up Card -->
+    <section class="auth-container" aria-labelledby="signupTitle">
+      <header class="form-header">
+        <h1 id="signupTitle">Sign Up</h1>
+        <p>Fill in your details to get started</p>
+      </header>
+
+      <!-- IMPORTANT: give the form an id for JS -->
+      <form class="form" id="signupForm" novalidate>
+        <!-- Row 1 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" type="text" placeholder="Juan" required />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" type="text" placeholder="Dela Cruz" required />
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone (optional)</label>
+            <input id="phone" name="phone" type="tel" placeholder="+63 912 345 6789" />
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Create a password" required minlength="8" />
+            <p id="passwordError" class="field-error"></p>
+          </div>
+          <div class="form-group">
+            <label for="confirm">Confirm password</label>
+            <input id="confirm" name="confirm" type="password" placeholder="Re-enter password" required minlength="8" />
+            <p id="confirmError" class="field-error"></p>
+          </div>
+        </div>
+
+        <!-- Terms row (with links) -->
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="terms" name="terms" />
+            By signing up, you agree to GCTech's
+            <a href="terms.html" target="_blank" rel="noopener">Terms and Service</a>
+            and
+            <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+          </label>
+          <p id="termsError" class="field-error"></p>
+        </div>
+
+        <button class="submit-btn" type="submit">Create Account</button>
+
+        <div class="auth-footer">
+          <p>Already have an account? <a href="login.html">Log in</a></p>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Log In</title>
+  <link rel="stylesheet" href="login/login.css" />
+</head>
+<body>
+
+<!-- Navbar -->
+  <header class="navbar">
+    <img src="assets/images/Store Logo/logo.png" alt="GC Tech Logo" />
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="homepage.html" class="active">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Customize</a></li>
+        <li><a href="aboutus.html">About Us</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <!-- Login Wrapper -->
+  <main class="login-wrapper">
+    <!-- Left: background panel (kept) -->
+    <section class="image-section">
+      <div class="image-overlay">
+        <div class="overlay-content">
+          <h2>Welcome</h2>
+          <p>Transforming ideas into eye-catching signs. Connecting brands with their audience, one display at a time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: login card -->
+    <section class="auth-container" aria-labelledby="loginTitle">
+      <header class="form-header">
+        <h1 id="loginTitle">Log in</h1>
+        <p>Please enter your details to continue</p>
+      </header>
+
+      <form class="form" id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-toggle">
+            <input id="password" name="password" type="password" placeholder="Your password" required />
+          </div>
+        </div>
+
+        <div class="remember-forgot">
+          <label class="checkbox-label">
+            <input type="checkbox" name="remember" />
+            Remember me
+          </label>
+          <a class="forgot-link" href="forgot-password.html">Forgot password?</a>
+        </div>
+
+        <button class="submit-btn" type="submit">Log In</button>
+
+        <div class="auth-footer">
+          <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

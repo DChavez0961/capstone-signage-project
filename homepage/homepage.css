@@ -1,0 +1,667 @@
+body {
+  margin: 0;
+  overflow: auto; /* ⬅ stops scrolling */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #fff;
+  line-height: 1.6;
+  height: 100vh;   /* ⬅ ensures body fits full viewport height */
+}
+
+/* === Navbar === */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  padding: 15px 5%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(255, 179, 71, 0.1);
+}
+
+.navbar .logo {
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffb347;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar ul {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar ul li a:hover {
+  background: #444;
+  color:  gold;
+  transform: translateY(-2px);
+}
+
+/* === Hero Section === */
+.hero {
+  background: url('../assets/images/background/store bg.png') center/cover no-repeat;
+  color: white;
+  text-align: center;
+  height: 220px;
+  padding: 120px 20px;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: 50px;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+}
+
+.hero p {
+  font-size: 25px;
+  margin: 10px 0;
+  color: #ffffff;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.795);
+}
+
+.hero .btn {
+  display: inline-block;
+  background: transparent;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: 2px solid white;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.hero .btn:hover {
+  background: white;
+  color: black;
+}
+
+/* === Services Section Background === */
+.services {
+  background: url('../assets/images/background/main bg light mode.png') no-repeat center center/cover;
+  padding: 0px 0 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* === Title Card === */
+.title-card {
+  position: relative;
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto 50px;
+  background: transparent;
+  padding: 40px;
+  border-radius: 0px 0px 16px 16px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.315);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.title-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.title-card .title-image {
+  max-width: 700px;
+  margin-bottom: 14px;
+}
+
+.title-card p {
+  font-size: 25px;
+  text-align: center;
+  color: #000000;
+  line-height: 1.7;
+  text-shadow: 1px 3px 2px rgba(0, 0, 0, 0.219);
+}
+
+/* === Service Cards === */
+.service-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding: 0px;
+}
+
+/* === Individual Service Box === */
+.service-box {
+  width: 100%;
+  display: flex;
+}
+
+.service-box.left {
+  justify-content: flex-start;
+}
+
+.service-box.right {
+  justify-content: flex-end;
+}
+
+/* === Box Inner for transparent overlay === */
+.box-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  padding: 50px 50px;
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 0px 16px 16px 0px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.315);
+  gap: 25px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.service-box.right .box-inner {
+  flex-direction: row-reverse;
+  border-radius: 16px 0px 0px 16px;
+}
+
+.box-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: -1;
+  border-radius: inherit;
+}
+
+/* === Icon === */
+.icon {
+  width: 250px;
+  height: 250px;
+  flex-shrink: 0;
+}
+
+/* === Content Styling === */
+.box-content {
+  text-align: justify;
+}
+
+.box-content h3 {
+  font-size: 35px;
+  font-weight: 700px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #000000;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 0;
+  text-shadow: 1px 4px 2px rgba(0, 0, 0, 0.219);
+}
+
+.box-content p {
+  font-size: 30px;
+  line-height: 1.8;
+  color: #000000;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-shadow: 1px 3px 2px rgba(0, 0, 0, 0.219);
+}
+
+/* === Text Offset for Visual Balance === */
+.service-box.left .box-content {
+  margin-left: 0px;
+}
+
+.service-box.right .box-content {
+  margin-right: 0px;
+}
+
+/* === Our service includes Section === */
+.service-includes-section {
+    background-color: #ffffff;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    min-height: 100px;
+}
+
+.service-includes-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Icon positioned above the content */
+.service-includes-icon {
+    height: 60px;
+    width: 600px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    padding: 30px;
+}
+
+.service-includes-container {
+    position: relative;
+    background: transparent;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.315);
+    max-width: 800px;
+    width: fit-content;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.service-includes-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: inherit;
+    z-index: -1;
+}
+
+/* Two-column grid layout */
+.service-includes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    justify-content: center;
+}
+
+.service-includes-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.service-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.service-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 3px 2px rgba(0, 0, 0, 0.219);
+}
+
+.service-description {
+    font-size: 13px;
+    color: #666666;
+    line-height: 1.4;
+    margin-left: 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .service-includes-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .service-name {
+        font-size: 15px;
+    }
+    
+    .service-includes-container {
+        padding: 30px;
+        max-width: 100%;
+    }
+}
+
+/* === Header Section === */
+.header {
+  background: #000000;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid #000000;
+}
+
+.logo-img {
+  height: 90px;
+  object-fit: contain;
+  display: block;
+}
+
+/* === Products Section === */
+.products {
+  min-height: 100vh;
+  position: relative;
+  padding: 60px 0px;
+  z-index: 1;
+  color: white;
+  overflow: hidden;
+}
+
+.products::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 40%),
+    url('../assets/images/background/main bg dark mode.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+/* Ensure content appears above overlay */
+.title-image,
+.product-gallery-container,
+.cta-section {
+  position: relative;
+  z-index: 2;
+}
+
+/* === Title Section === */
+.title-image {
+  text-align: center;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.premium-title {
+  font-size: 3.5rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.product-gallery-container {
+    position: relative;
+    max-width: 1600px; 
+    max-height: 400px;
+    margin: 0 auto;
+    z-index: 2;
+}
+
+.product-gallery {
+  display: flex;
+  gap: 50px;
+  padding: 60px; 
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-slide {
+  flex: 0 0 calc(45% - 30px);
+  min-height: 450px;
+  opacity: 1;
+  transform: scale(0.95);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.product-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* dim effect for non-active slides */
+.product-slide:not(.active) .product-content {
+  filter: brightness(60%);
+}
+
+.product-content {
+  position: relative;
+  height: 400px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #7e7e7e00 100%);
+  box-shadow:
+    0 20px 40px rgba(255, 255, 255, 0.178),
+    0 0 0 1px rgba(255, 215, 0, 0.2);
+  transition: all 0.4s ease;
+}
+
+.product-content:hover {
+  transform: translateY(-10px);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 215, 0, 0.4);
+}
+
+.product-image {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.product-content:hover .product-image img {
+  transform: scale(1.1);
+}
+
+/* === Product Info === */
+.product-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  background: linear-gradient(transparent, rgb(128, 128, 128));
+  
+}
+
+.product-info h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 5px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.show-more-btn {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #000000;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.show-more-btn:hover {
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+}
+
+/* === Navigation Buttons === */
+
+.nav-btn {
+    position: absolute;
+    top: 37%;
+    transform: translateY(-50%);
+    background: linear-gradient(145deg, #ffdd33, #e6be00);
+    color: #000;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.nav-btn:hover {
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+    background: linear-gradient(145deg, #ffe066, #f5c400);
+}
+
+.prev-btn {
+    left: 7px;
+}
+
+.next-btn {
+    right: 7px;
+}
+
+
+/* === Dots === */
+.dots-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 8px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.active,
+.dot:hover {
+  background-color: #ffd700;
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* === Call to Action Section === */
+.cta-section {
+  text-align: center;
+  margin-top: 100px;
+  padding: 60px 20px;
+  background: url('../assets/images/background/main bg light mode.png') center/cover no-repeat;
+  border-radius: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 7px 7px 5px rgba(255, 217, 0, 0.315);
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 30px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 1px 4px 7px rgba(0, 0, 0, 0.795);
+}
+
+.shop-now-btn {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #000000;
+  border: none;
+  padding: 18px 50px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 3px 6px 7px rgba(0, 0, 0, 0.671);
+}
+
+.shop-now-btn:hover {
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(255, 215, 0, 0.5);
+}
+
+/* === Footer === */
+.footer {
+  text-align: center;
+  padding: 20px 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: #0f0f0f;  /* matches dark theme */
+  color: #bbb;
+  font-size: 14px;
+}
+.footer a {
+  color: #ffd60a;
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+  color: rgb(42, 143, 201);
+}
+
+/* === Animations === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+.product-carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
+}
