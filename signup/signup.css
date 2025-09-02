@@ -246,6 +246,7 @@ body {
 .auth-footer a:hover {
   color: #005bb5;
 }
+
 /* Responsive (stack columns on small screens) */
 @media (max-width: 1024px) {
   .signup-wrapper { flex-direction: column; min-height: auto; }

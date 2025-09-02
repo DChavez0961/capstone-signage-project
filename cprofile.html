@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - GC Tech</title>
+  <!-- fixed path: use forward slashes -->
+  <link rel="stylesheet" href="cprofile/cprofile.css"/>
+</head>
+<body>
+  <!-- Navbar (unchanged) -->
+  <header class="navbar">
+    <img src="assets/images/Store Logo/logo.png" alt="GC Tech Logo" />
+    <nav>
+      <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="pcatlog.html">Products</a></li>
+        <li><a href="#">Customize</a></li>
+        <li><a href="aboutus.html">About Us</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+ <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Customer Dashboard</h1>
+            <p>Welcome back, <span id="welcome-name">John</span>!</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Navigation Sidebar -->
+            <div class="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-btn active" data-tab="profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </button>
+                    <button class="nav-btn" data-tab="password">
+                        <i class="fas fa-lock"></i>
+                        <span>Change Password</span>
+                    </button>
+                    <button class="nav-btn" data-tab="cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>My Cart</span>
+                    </button>
+                    <button class="nav-btn" data-tab="purchases">
+                        <i class="fas fa-box"></i>
+                        <span>My Purchases</span>
+                    </button>
+                    <button class="nav-btn" data-tab="updates">
+                        <i class="fas fa-bell"></i>
+                        <span>Order Updates</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Profile Section -->
+                <div id="profile-section" class="content-section active">
+                    <div class="section-header">
+                        <h2>Profile Information</h2>
+                        <div class="profile-actions">
+                            <button id="edit-profile-btn" class="btn btn-primary">
+                                <i class="fas fa-edit"></i>
+                                Edit Profile
+                            </button>
+                            <div id="save-cancel-btns" class="save-cancel-group" style="display: none;">
+                                <button id="save-profile-btn" class="btn btn-success">
+                                    <i class="fas fa-save"></i>
+                                    Save Changes
+                                </button>
+                                <button id="cancel-profile-btn" class="btn btn-secondary">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="profile-form" class="profile-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" value="John" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" value="Doe" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" value="john.doe@example.com" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" name="phone" value="+1 (555) 123-4567" disabled>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" name="address" value="123 Main Street" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" value="New York" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" name="state" value="NY" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipCode">ZIP Code</label>
+                                <input type="text" id="zipCode" name="zipCode" value="10001" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" id="country" name="country" value="United States" disabled>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Password Section -->
+                <div id="password-section" class="content-section">
+                    <h2>Change Password</h2>
+                    <form id="password-form" class="password-form">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <div class="password-input">
+                                <input type="password" id="currentPassword" name="currentPassword">
+                                <button type="button" class="password-toggle" data-target="currentPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <div class="password-input">
+                                <input type="password" id="newPassword" name="newPassword">
+                                <button type="button" class="password-toggle" data-target="newPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <div class="password-input">
+                                <input type="password" id="confirmPassword" name="confirmPassword">
+                                <button type="button" class="password-toggle" data-target="confirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" id="change-password-btn" class="btn btn-primary full-width">
+                            Change Password
+                        </button>
+                        <p class="password-hint">Password must be at least 8 characters long.</p>
+                    </form>
+                </div>
+
+                <!-- Cart Section -->
+                <div id="cart-section" class="content-section">
+                    <h2>My Cart (<span id="cart-count">3</span> items)</h2>
+                    <div id="cart-items" class="cart-items">
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <div class="item-icon">🎧</div>
+                                <div class="item-details">
+                                    <h3>Wireless Headphones</h3>
+                                    <p>Quantity: 1</p>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                <p class="price">$129.99</p>
+                                <p class="unit-price">$129.99 each</p>
+                            </div>
+                        </div>
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <div class="item-icon">📱</div>
+                                <div class="item-details">
+                                    <h3>Smartphone Case</h3>
+                                    <p>Quantity: 2</p>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                <p class="price">$49.98</p>
+                                <p class="unit-price">$24.99 each</p>
+                            </div>
+                        </div>
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <div class="item-icon">🔌</div>
+                                <div class="item-details">
+                                    <h3>USB Cable</h3>
+                                    <p>Quantity: 1</p>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                <p class="price">$15.99</p>
+                                <p class="unit-price">$15.99 each</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-total">
+                        <div class="total-row">
+                            <span>Total:</span>
+                            <span id="cart-total">$195.96</span>
+                        </div>
+                        <button class="btn btn-success full-width checkout-btn">
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Purchases Section -->
+                <div id="purchases-section" class="content-section">
+                    <h2>My Purchases</h2>
+                    <div class="purchases-list">
+                        <div class="purchase-item">
+                            <div class="purchase-header">
+                                <div class="order-info">
+                                    <h3>Order #ORD-2024-001</h3>
+                                    <p>Date: 2024-08-15</p>
+                                </div>
+                                <div class="order-summary">
+                                    <p class="order-total">$249.99</p>
+                                    <span class="status-badge delivered">Delivered</span>
+                                </div>
+                            </div>
+                            <div class="order-items">
+                                <p><strong>Items:</strong></p>
+                                <ul>
+                                    <li>• Laptop Stand</li>
+                                    <li>• Mouse Pad</li>
+                                    <li>• Webcam</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="purchase-item">
+                            <div class="purchase-header">
+                                <div class="order-info">
+                                    <h3>Order #ORD-2024-002</h3>
+                                    <p>Date: 2024-08-10</p>
+                                </div>
+                                <div class="order-summary">
+                                    <p class="order-total">$89.99</p>
+                                    <span class="status-badge delivered">Delivered</span>
+                                </div>
+                            </div>
+                            <div class="order-items">
+                                <p><strong>Items:</strong></p>
+                                <ul>
+                                    <li>• Bluetooth Speaker</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="purchase-item">
+                            <div class="purchase-header">
+                                <div class="order-info">
+                                    <h3>Order #ORD-2024-003</h3>
+                                    <p>Date: 2024-07-28</p>
+                                </div>
+                                <div class="order-summary">
+                                    <p class="order-total">$159.99</p>
+                                    <span class="status-badge delivered">Delivered</span>
+                                </div>
+                            </div>
+                            <div class="order-items">
+                                <p><strong>Items:</strong></p>
+                                <ul>
+                                    <li>• Gaming Mouse</li>
+                                    <li>• Keyboard</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Updates Section -->
+                <div id="updates-section" class="content-section">
+                    <h2>Order Updates</h2>
+                    <div class="updates-list">
+                        <div class="update-item shipping">
+                            <div class="update-header">
+                                <h3>Order #ORD-2024-004</h3>
+                                <span class="update-date">2024-08-30</span>
+                            </div>
+                            <p class="update-message">Your order has been shipped and is on the way!</p>
+                            <span class="update-type">Shipping</span>
+                        </div>
+                        <div class="update-item delivered">
+                            <div class="update-header">
+                                <h3>Order #ORD-2024-003</h3>
+                                <span class="update-date">2024-08-29</span>
+                            </div>
+                            <p class="update-message">Your order has been delivered successfully.</p>
+                            <span class="update-type">Delivered</span>
+                        </div>
+                        <div class="update-item payment">
+                            <div class="update-header">
+                                <h3>Order #ORD-2024-004</h3>
+                                <span class="update-date">2024-08-28</span>
+                            </div>
+                            <p class="update-message">Your payment has been processed.</p>
+                            <span class="update-type">Payment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="cprofile\cprofile.js"></script>
+
+
+
+  <!-- Footer -->
+<footer class="footer">
+  <p>&copy; 2025 GC Tech Signage. All rights reserved. | 
+    <a href="terms.html">Terms & Conditions</a> | 
+    <a href="privacy.html">Privacy Policy</a>
+  </p>
+</footer>
+
+</body>
+</html>

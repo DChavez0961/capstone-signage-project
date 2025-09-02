@@ -56,6 +56,7 @@ body {
   color:  gold;
   transform: translateY(-2px);
 }
+
 /* === Login Wrapper === */
 .login-wrapper {
   display: flex;

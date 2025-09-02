@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - GC Tech</title>
+  <!-- fixed path: use forward slashes -->
+  <link rel="stylesheet" href="pcatalog/pcatalog.css"/>
+</head>
+<body>
+  <!-- Navbar (unchanged) -->
+  <header class="navbar">
+    <img src="assets/images/Store Logo/logo.png" alt="GC Tech Logo" />
+    <nav>
+      <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="pcatlog.html">Products</a></li>
+        <li><a href="#">Customize</a></li>
+        <li><a href="aboutus.html">About Us</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <!-- Title -->
+  <section class="catalog-hero">
+    <h1>Signage Catalog</h1>
+    <p>Explore premium indoor & outdoor signages built for visibility and durability.</p>
+  </section>
+
+  <!-- Filters (light/glassy background) -->
+  <section class="filters" aria-label="Signage filters">
+    <div class="filter-box">
+      <h3>Signage</h3>
+      <label for="categoryFilter">Category</label>
+      <select id="categoryFilter">
+        <option value="all" selected>All</option>
+        <option value="indoor">Indoor</option>
+        <option value="outdoor">Outdoor</option>
+        <option value="led">LED</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+
+    <div class="filter-box">
+      <h3>Billboards</h3>
+      <label for="materialFilter">Materials</label>
+      <select id="materialFilter">
+        <option value="any" selected>Any</option>
+        <option value="aluminum">Aluminum</option>
+        <option value="vinyl">Vinyl</option>
+        <option value="pvc">PVC</option>
+        <option value="acrylic">Acrylic</option>
+      </select>
+    </div>
+
+    <div class="filter-box">
+      <h3>Street Signs</h3>
+      <label for="typeFilter">Type</label>
+      <select id="typeFilter">
+        <option value="all" selected>Any</option>
+        <option value="stop">Stop</option>
+        <option value="warning">Warning</option>
+        <option value="directional">Directional</option>
+        <option value="safety">Safety</option>
+      </select>
+    </div>
+
+    <div class="filter-box search-box">
+      <input id="searchInput" type="text" placeholder="Search products..." aria-label="Search products"/>
+      <button id="searchBtn" type="button">Search</button>
+    </div>
+  </section>
+
+  <!-- Products (darker panel background) -->
+  <main class="catalog" id="catalog">
+    <div class="grid" id="catalogGrid">
+
+      <!-- STOP (outdoor / aluminum) -->
+      <article class="card"
+               data-type="stop"
+               data-category="outdoor"
+               data-material="aluminum">
+        <div class="card-media">
+          <img src="../assets/images/Products/stop-1.jpg" alt="Standard aluminum stop sign">
+          <span class="price">₱2,450</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Stop Sign (Aluminum)</h3>
+          <p class="meta">Reflective • 18&quot; x 18&quot; • Rust-proof</p>
+          <p class="desc">DOT-grade reflective film for day/night visibility. Pre-drilled for easy mounting.</p>
+        </div>
+      </article>
+
+      <article class="card"
+               data-type="stop"
+               data-category="outdoor"
+               data-material="aluminum">
+        <div class="card-media">
+          <img src="../assets/images/Products/stop-2.jpg" alt="Heavy-duty stop sign with post">
+          <span class="price">₱4,990</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Stop Sign + Post</h3>
+          <p class="meta">HD post • Reflective • Outdoor</p>
+          <p class="desc">Complete kit with galvanized post and mounting hardware. Weather-resistant.</p>
+        </div>
+      </article>
+
+      <!-- WARNING (indoor / pvc) -->
+      <article class="card"
+               data-type="warning"
+               data-category="indoor"
+               data-material="pvc">
+        <div class="card-media">
+          <img src="../assets/images/Products/warning-1.jpg" alt="Caution wet floor signage">
+          <span class="price">₱850</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Caution: Wet Floor</h3>
+          <p class="meta">Double-sided • Foldable</p>
+          <p class="desc">Lightweight and durable with high-contrast print for indoor safety reminders.</p>
+        </div>
+      </article>
+
+      <article class="card"
+               data-type="warning"
+               data-category="outdoor"
+               data-material="pvc">
+        <div class="card-media">
+          <img src="../assets/images/Products/warning-2.jpg" alt="High voltage warning board">
+          <span class="price">₱1,490</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">High Voltage</h3>
+          <p class="meta">PVC • UV print • 12&quot; x 18&quot;</p>
+          <p class="desc">Industrial board printed with fade-resistant inks for long-term use.</p>
+        </div>
+      </article>
+
+      <!-- DIRECTIONAL (outdoor / vinyl) -->
+      <article class="card"
+               data-type="directional"
+               data-category="outdoor"
+               data-material="vinyl">
+        <div class="card-media">
+          <img src="../assets/images/Products/directional-1.jpg" alt="Directional arrow signage">
+          <span class="price">₱990</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Arrow Direction</h3>
+          <p class="meta">Vinyl on ACP • Indoor/Outdoor</p>
+          <p class="desc">Clear wayfinding arrows for malls, offices, and events. Custom colors available.</p>
+        </div>
+      </article>
+
+      <article class="card"
+               data-type="directional"
+               data-category="outdoor"
+               data-material="vinyl">
+        <div class="card-media">
+          <img src="../assets/images/Products/directional-2.jpg" alt="Parking directional sign">
+          <span class="price">₱1,250</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Parking Ahead</h3>
+          <p class="meta">Reflective vinyl • Outdoor</p>
+          <p class="desc">Highly visible parking guidance sign with reflective overlay for night use.</p>
+        </div>
+      </article>
+
+      <!-- SAFETY (indoor / acrylic) -->
+      <article class="card"
+               data-type="safety"
+               data-category="indoor"
+               data-material="acrylic">
+        <div class="card-media">
+          <img src="../assets/images/Products/safety-1.jpg" alt="Emergency exit signage">
+          <span class="price">₱1,650</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Emergency Exit (Glow)</h3>
+          <p class="meta">Photoluminescent • Acrylic</p>
+          <p class="desc">Glows in the dark; ideal for corridors and stairwells with low light.</p>
+        </div>
+      </article>
+
+      <article class="card"
+               data-type="safety"
+               data-category="indoor"
+               data-material="pvc">
+        <div class="card-media">
+          <img src="../assets/images/Products/safety-2.jpg" alt="Fire extinguisher locator sign">
+          <span class="price">₱780</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Fire Extinguisher</h3>
+          <p class="meta">PVC • UV print • Indoor</p>
+          <p class="desc">Bold, high-contrast pointer to quickly locate fire extinguishers.</p>
+        </div>
+      </article>
+
+      <!-- LED (led / acrylic) -->
+      <article class="card"
+               data-type="led"
+               data-category="led"
+               data-material="acrylic">
+        <div class="card-media">
+          <img src="../assets/images/Products/led Product.jpg" alt="Neon style LED sign">
+          <span class="price">₱6,900</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Neon-Style LED</h3>
+          <p class="meta">RGB/Single • 12V</p>
+          <p class="desc">Custom shapes and colors. Energy-efficient and eye-catching glow.</p>
+        </div>
+      </article>
+
+      <article class="card"
+               data-type="led"
+               data-category="led"
+               data-material="acrylic">
+        <div class="card-media">
+          <img src="../assets/images/Products/led-2.jpg" alt="LED lightbox">
+          <span class="price">₱5,400</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Slim Lightbox</h3>
+          <p class="meta">Edge-lit • Snap frame</p>
+          <p class="desc">Ultra-thin profile with uniform glow. Great for menus, posters, and ads.</p>
+        </div>
+      </article>
+
+      <!-- CUSTOM (custom / aluminum) -->
+      <article class="card"
+               data-type="custom"
+               data-category="custom"
+               data-material="aluminum">
+        <div class="card-media">
+          <img src="../assets/images/Products/3d-signage.jpg" alt="Stainless built up letters">
+          <span class="price">From ₱12,000</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">3D Built-Up Letters</h3>
+          <p class="meta">Stainless/Acrylic • LED optional</p>
+          <p class="desc">Premium 3D letters fabricated to your brand specs. Outdoor-ready.</p>
+        </div>
+      </article>
+
+      <article class="card"
+               data-type="custom"
+               data-category="custom"
+               data-material="aluminum">
+        <div class="card-media">
+          <img src="../assets/images/Products/custom-2.jpg" alt="Brass logo signage">
+          <span class="price">Custom</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">Custom Logo Plate</h3>
+          <p class="meta">Brass/Aluminum • CNC/Laser</p>
+          <p class="desc">Make your logo stand out with precision-cut metals, brushed or mirror finish.</p>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- Footer (single compact line) -->
+  <footer class="footer">
+    <p>
+      &copy; 2025 GC Tech. All rights reserved. |
+      <a href="../terms.html">Terms &amp; Conditions</a> |
+      <a href="../privacy.html">Privacy Policy</a>
+    </p>
+  </footer>
+
+  <!-- Tiny JS filter (type/category/material + search) -->
+  <script>
+    (function () {
+      const cards = Array.from(document.querySelectorAll('.card'));
+      const typeSel = document.getElementById('typeFilter');
+      const catSel  = document.getElementById('categoryFilter');
+      const matSel  = document.getElementById('materialFilter');
+      const search  = document.getElementById('searchInput');
+      const btn     = document.getElementById('searchBtn');
+
+      function matches(card, val, attr) {
+        return val === 'all' || val === 'any' || card.dataset[attr] === val;
+      }
+
+      function textMatch(card, q) {
+        if (!q) return true;
+        const hay = (card.innerText || '').toLowerCase();
+        return hay.includes(q.toLowerCase());
+      }
+
+      function applyFilters() {
+        const t = typeSel.value;
+        const c = catSel.value;
+        const m = matSel.value;
+        const q = search.value.trim();
+
+        cards.forEach(card => {
+          const show =
+            matches(card, t, 'type') &&
+            matches(card, c, 'category') &&
+            matches(card, m, 'material') &&
+            textMatch(card, q);
+
+          card.style.display = show ? '' : 'none';
+        });
+      }
+
+      typeSel.addEventListener('change', applyFilters);
+      catSel.addEventListener('change', applyFilters);
+      matSel.addEventListener('change', applyFilters);
+      btn.addEventListener('click', applyFilters);
+      search.addEventListener('keydown', e => { if (e.key === 'Enter') applyFilters(); });
+
+      applyFilters();
+    })();
+  </script>
+</body>
+</html>

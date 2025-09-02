@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Create Your Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Lily+Script+One&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --rail-w: 72px;
+  --panel-w: 520px;      /* editor width */
+  --radius-lg: 14px;
+  --row-h: 54px;
+  --pad: 12px; --pad-lg: 16px;
+
+  --grad1:#667eea; --grad2:#764ba2;
+  --rail-bg:#2e2f33; --rail-text:#e8e8ea;
+  --canvas-bg:#171717;
+
+  --panel-bg:#f3eddc;      /* warm beige */
+  --panel-row:#efe8d5;
+  --head:#dedede;
+  --line:#d2ccb9;
+
+  --ink:#2d2d2d; --muted:#6b6b6b;
+
+  /* >>> Set these when you add your own navbar/footer <<< */
+  --header-h: 0px;   /* e.g. 64px */
+  --footer-h: 0px;   /* e.g. 56px */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(135deg,var(--grad1),var(--grad2));
+  min-height:100vh;
+  /* fill the screen (we’re not centering anymore) */
+  display:block;
+  padding:0;
+}
+/* app layout: rail | editor | canvas */
+.app{
+  /* full desktop size */
+  width:100vw;
+  height:calc(100vh - var(--header-h) - var(--footer-h));
+  max-width:none;
+  border-radius:0;
+  box-shadow:none;
+  margin:0;
+
+  display:grid;
+  grid-template-columns: var(--rail-w) var(--panel-w) 1fr;
+  background:var(--canvas-bg);
+  overflow:hidden;
+}
+
+/* === left tool rail === */
+.rail{background:linear-gradient(#3a3b40,#2a2b2f); color:var(--rail-text);
+  display:flex; flex-direction:column; align-items:center; padding:10px 0; gap:8px}
+.tab{width:100%; display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 0; cursor:pointer}
+.tab .ico{width:28px;height:28px; stroke:#fff; opacity:.9}
+.tab .lbl{writing-mode:vertical-rl; transform:rotate(180deg); font-size:11px; letter-spacing:.4px}
+.tab:hover,.tab.active{background:rgba(255,255,255,.08)}
+
+/* === editor === */
+.editor{height:100%; background:var(--panel-bg); border-right:1px solid var(--line); display:flex; flex-direction:column}
+.ed-head{display:flex; align-items:center; justify-content:space-between; padding:10px var(--pad-lg); background:var(--head); border-bottom:1px solid var(--line); font-weight:600}
+.back{display:flex; align-items:center; gap:6px; color:#333; cursor:pointer}
+.closeX{cursor:pointer; opacity:.8}
+
+/* scrollable body with styled scrollbar */
+.ed-body{flex:1; overflow:auto; padding-bottom:12px}
+.ed-body::-webkit-scrollbar{width:10px}
+.ed-body::-webkit-scrollbar-track{background:#e9e3d1; border-left:1px solid #d8d0ba}
+.ed-body::-webkit-scrollbar-thumb{background:#c7bea6; border-radius:8px}
+.ed-body::-webkit-scrollbar-thumb:hover{background:#b9af92}
+
+.row{
+  display:grid; grid-template-columns: 1fr auto; align-items:center;
+  padding:12px 18px; gap:14px; min-height:56px;
+  border-bottom:1px solid var(--line); background:var(--panel-row)
+}
+.row .label{font-size:13px; color:#222; font-weight:600}
+.input, select, .num{
+  border:1px solid #bfb8a3; border-radius:10px; height:36px;
+  padding:0 10px; font:inherit; color:#222; width:100%;
+  background:#fff;
+}
+.preview-font{font-family:"Lily Script One",cursive; font-size:26px; text-align:center; padding:8px 0}
+.color-chip{width:28px;height:22px;border-radius:6px;border:1px solid #b5ae99; background:#ff3333; cursor:pointer}
+.row-split{display:flex; align-items:center; gap:10px}
+.chev{margin-left:auto; color:#333}
+
+/* extra inner padding so sliders don't hug edges */
+.sliderRow{display:flex; align-items:center; gap:10px; width:100%; padding-right:24px}
+input[type="range"]{flex:1}
+.smallnote{font-size:10px; color:#6a6659}
+.aligns{display:flex; gap:8px}
+.btn{border:1px solid #c9c2ae; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer}
+.btn.full{width:100%; text-align:center; font-weight:700}
+.btn.active{background:#333; color:#fff}
+
+/* clean dropdown (no background) */
+.select-clean{
+  background:transparent; border:1px solid #bfb8a3; border-radius:10px; height:36px; padding:0 36px 0 12px;
+  appearance:none; -webkit-appearance:none; -moz-appearance:none; position:relative;
+}
+.select-wrap{position:relative; width:100%}
+.select-wrap:after{
+  content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  color:#444; font-size:14px; pointer-events:none;
+}
+
+/* === canvas / stage === */
+.stage{position:relative}
+.canvas{
+  width:100%; height:100%; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background-image:
+    linear-gradient(45deg, #1d1d1d 25%, transparent 25%),
+    linear-gradient(-45deg, #1d1d1d 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1d1d1d 75%),
+    linear-gradient(-45deg, transparent 75%, #1d1d1d 75%);
+  background-size:24px 24px; background-position:0 0, 0 12px, 12px -12px, -12px 0;
+}
+.placeholder{color:#9aa0a6;text-align:center}
+.placeholder h3{color:#e6e6e6;margin-bottom:6px;font-weight:600}
+
+/* draggable item + handles */
+.item{position:absolute; cursor:move; border:2px dashed transparent; border-radius:10px; transition:.15s; padding:4px}
+.item:hover{border-color:#999}
+.item.selected{background:rgba(255,255,255,.05); border-color:#bbb}
+.img-wrap{background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.img-wrap img{display:block; max-width:340px; max-height:240px; width:auto; height:auto}
+.handles{position:absolute; inset:0; pointer-events:none}
+.btnX,.btnRot{
+  position:absolute; width:22px; height:22px; border-radius:50%; background:#fff;
+  border:1px solid #bcbcbc; display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.25);
+  pointer-events:auto; cursor:pointer; font-size:13px; color:#222; user-select:none;
+}
+.btnX{ top:-10px; right:-10px }
+.btnRot{ bottom:-10px; right:-10px }
+
+/* floating undo/redo */
+.float-stack{position:absolute; right:16px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:10px}
+.pill{background:#e6e0cf; color:#111; border-radius:12px; width:76px; height:120px; box-shadow:0 10px 24px rgba(0,0,0,.35); padding:10px 8px;
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between; border:1px solid #bfb8a3}
+.pill button{all:unset; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:12px; color:#222; padding:4px 6px; border-radius:8px}
+.pill button:hover{background:#efe8d6}
+.pill svg{width:22px;height:22px; stroke:#2c2c2c}
+
+/* modals */
+.modal-wrap{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.45); z-index:50}
+.modal{width:min(760px,92vw); background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,.35)}
+.modal .mhead{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#333; color:#fff}
+.modal .mbody{padding:14px}
+.modal .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(32px,1fr)); gap:10px}
+.swatch{width:32px;height:32px;border-radius:6px;border:2px solid transparent; cursor:pointer}
+.swatch.selected{outline:2px solid #2d5bff; outline-offset:2px}
+.palette-top{display:flex; align-items:center; gap:14px; margin-bottom:14px}
+.palette-actions{display:flex; justify-content:flex-end; margin-top:20px}
+.done{background:#2d5bff; color:#fff; border:none; border-radius:10px; padding:10px 18px; font-weight:700; cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- left rail -->
+  <div class="rail">
+    <div class="tab" onclick="tool('upload')">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <div class="lbl">UPLOAD</div>
+    </div>
+    <div class="tab active" onclick="tool('text')">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+      </svg>
+      <div class="lbl">ADD TEXT</div>
+    </div>
+    <div class="tab" onclick="tool('art')">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="14" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>
+      </svg>
+      <div class="lbl">ADD ART</div>
+    </div>
+    <div class="tab" onclick="openProduct()">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      <div class="lbl" style="line-height:1.05">PRODUCT COLOR & SIZE</div>
+    </div>
+  </div>
+
+  <!-- editor -->
+  <div class="editor" id="editor">
+    <div class="ed-head">
+      <div class="back" onclick="deselect()"><span style="font-size:18px">⟵</span><span>Edit Text</span></div>
+      <div class="closeX" onclick="deselect()">✕</div>
+    </div>
+    <div class="ed-body">
+      <!-- input -->
+      <div class="row">
+        <div class="label" style="grid-column:1/-1">
+          <input id="textContent" class="input" placeholder="Add Text Here..."/>
+        </div>
+      </div>
+      <div class="row" style="grid-template-columns:1fr">
+        <button id="addTextBtn" class="btn full">+ Add New Text</button>
+      </div>
+
+      <!-- font preview + dropdown (transparent) -->
+      <div class="row" style="grid-template-columns:1fr">
+        <div id="fontPreview" class="preview-font">Lily Script One</div>
+      </div>
+      <div class="row">
+        <div class="label">Change<br/>Font</div>
+        <div class="select-wrap">
+          <select id="fontFamily" class="select-clean">
+            <option value="Inter">Inter</option>
+            <option value="Lily Script One" selected>Lily Script One</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Impact">Impact</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- fill color (chip opens palette) -->
+      <div class="row">
+        <div class="label">Edit Color</div>
+        <div class="row-split">
+          <span id="fillName">Red</span>
+          <div id="fillChip" class="color-chip" title="Choose color"></div>
+          <span class="chev">▾</span>
+        </div>
+      </div>
+
+      <!-- rotation -->
+      <div class="row">
+        <div class="label">Rotation</div>
+        <div class="sliderRow">
+          <input type="range" id="rotateSlider" min="-180" max="180" step="1" value="0"/>
+          <input type="number" id="rotateNum" class="num" style="width:64px" min="-180" max="180" step="1" value="0"/>
+        </div>
+      </div>
+
+      <!-- outline (bigger max; live updates) -->
+      <div class="row">
+        <div class="label">Outline</div>
+        <div class="row-split" style="width:100%">
+          <input type="range" id="outlineSlider" min="0" max="20" step="1" value="0" style="flex:1"/>
+          <span id="strokeName">Cyan</span>
+          <div id="strokeChip" class="color-chip" style="background:#00ffff" title="Choose outline color"></div>
+          <span class="chev">▾</span>
+        </div>
+        <div class="label smallnote" style="grid-column:1/2">None</div>
+        <div class="smallnote" style="text-align:right">Very Thick</div>
+      </div>
+
+      <!-- background summary -->
+      <div class="row" onclick="toggleRow('bgOptionsRow')" style="cursor:pointer">
+        <div class="label">Text Background</div>
+        <div class="row-split"><em id="bgStatus">Off</em><span class="chev">▾</span></div>
+      </div>
+      <!-- background controls (shape + color + opacity + size/scale) -->
+      <div class="row" id="bgOptionsRow" style="display:none; grid-template-columns:1fr">
+        <div class="row" style="border:none; background:transparent; grid-template-columns:1fr 2fr">
+          <div class="label">Background</div>
+          <div style="display:flex; gap:10px; align-items:center">
+            <div class="select-wrap" style="width:140px">
+              <select id="bgShape" class="select-clean">
+                <option value="none">None</option>
+                <option value="rect">Rectangle</option>
+                <option value="circle">Circle</option>
+              </select>
+            </div>
+            <input type="color" id="bgColor" value="#ffffff" title="Background color"/>
+            <div class="sliderRow" style="max-width:260px">
+              <span class="smallnote">Opacity</span>
+              <input type="range" id="bgOpacity" min="0" max="1" step="0.05" value="0"/>
+              <span id="bgOpacityVal" class="smallnote" style="width:32px;text-align:right">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="border:none; background:transparent; grid-template-columns:1fr 2fr">
+          <div class="label">Size</div>
+          <div class="sliderRow" style="max-width:380px">
+            <span class="smallnote">Smaller</span>
+            <input type="range" id="bgScale" min="0.5" max="2" step="0.05" value="1"/>
+            <span class="smallnote">Larger</span>
+            <input type="number" id="bgScaleNum" class="num" style="width:70px" min="0.5" max="2" step="0.05" value="1"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- text shape -->
+      <div class="row" onclick="openShapes()" style="cursor:pointer">
+        <div class="label">Text Shape</div>
+        <div class="row-split"><em id="shapeVal">Circle</em><span class="chev">▾</span></div>
+      </div>
+
+      <!-- size -->
+      <div class="row">
+        <div class="label">Text Size</div>
+        <input type="number" id="fontSize" class="num" value="64" min="6" max="300" step="1" style="width:80px"/>
+      </div>
+
+      <!-- alignment -->
+      <div class="row" style="grid-template-columns:1fr">
+        <div class="aligns">
+          <button id="alL" class="btn" onclick="setAlign('start')">☰◻◻</button>
+          <button id="alC" class="btn active" onclick="setAlign('middle')">◻☰◻</button>
+          <button id="alR" class="btn" onclick="setAlign('end')">◻◻☰</button>
+          <span style="margin-left:10px;color:#333">Text Alignment</span>
+          <span class="chev" style="margin-left:auto">Center</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- canvas -->
+  <div class="stage">
+    <div class="canvas" id="canvas">
+      <div class="placeholder"><h3>Start Creating</h3><p>Use the tools on the left to add elements.</p></div>
+
+      <div class="float-stack">
+        <div class="pill">
+          <button onclick="undo()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="m21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+            <span>Undo</span>
+          </button>
+          <button onclick="redo()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="m3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg>
+            <span>Redo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHAPE MODAL -->
+<div id="shapeModal" class="modal-wrap">
+  <div class="modal">
+    <div class="mhead"><strong>Text Shape</strong><button onclick="closeModal('shapeModal')" style="all:unset;cursor:pointer">✕</button></div>
+    <div class="mbody">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px">
+        <button class="btn" id="shStraight" onclick="chooseShape('straight')">Straight</button>
+        <button class="btn" id="shArcUp" onclick="chooseShape('arcUp')">Arc Up</button>
+        <button class="btn" id="shArcDown" onclick="chooseShape('arcDown')">Arc Down</button>
+        <button class="btn" id="shCircle" onclick="chooseShape('circle')">Circle</button>
+      </div>
+      <div class="sliderRow">
+        <label style="min-width:110px">Curve Amount</label>
+        <input id="curveSlider" type="range" min="20" max="180" step="5" value="120"/>
+        <input id="curveNum" type="number" class="num" style="width:72px" min="20" max="180" step="5" value="120"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COLOR PALETTE MODAL -->
+<div id="colorModal" class="modal-wrap">
+  <div class="modal">
+    <div class="mhead"><strong id="paletteTitle">Select Color</strong><button onclick="closeModal('colorModal')" style="all:unset;cursor:pointer">✕</button></div>
+    <div class="mbody">
+      <div class="palette-top">
+        <label style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="whiteChk"/> White
+        </label>
+      </div>
+      <div class="grid" id="paletteGrid"></div>
+      <div class="palette-actions"><button class="done" id="paletteDone">Done</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ART MODAL -->
+<div id="artModal" class="modal-wrap">
+  <div class="modal">
+    <div class="mhead"><strong>Add Art</strong><button onclick="closeModal('artModal')" style="all:unset;cursor:pointer">✕</button></div>
+    <div class="mbody">
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px" id="artTabs"></div>
+      <div class="grid" id="artGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL (placeholder) -->
+<div id="productModal" class="modal-wrap">
+  <div class="modal">
+    <div class="mhead"><strong>Product Color & Size</strong><button onclick="closeModal('productModal')" style="all:unset;cursor:pointer">✕</button></div>
+    <div class="mbody"><p>Placeholder for product options.</p></div>
+  </div>
+</div>
+
+<script>
+/* ===== Config ===== */
+const DEFAULT_IMAGE_URL="/mnt/data/dcaff525-e927-4a91-8657-f0c932b9d56c.png";
+
+/* ===== Helpers ===== */
+const $=(q,r=document)=>r.querySelector(q);
+const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
+function toggleRow(id){ const el=$("#"+id); el.style.display = (el.style.display==='none'||!el.style.display)?'grid':'none'; }
+function openModal(id){ $("#"+id).style.display="flex"; }
+function closeModal(id){ $("#"+id).style.display="none"; }
+function nameColor(hex){const map={
+  "#000000":"Black","#FFFFFF":"White","#FF3333":"Red","#00FFFF":"Cyan",
+  "#FF0000":"Red","#FF7F50":"Coral","#FF8C00":"Dark Orange","#FFA500":"Orange",
+  "#FFD700":"Gold","#FFFF00":"Yellow","#ADFF2F":"Green Yellow","#7CFC00":"Lawn Green",
+  "#00FF00":"Lime","#32CD32":"Lime Green","#008000":"Green","#006400":"Dark Green",
+  "#00CED1":"Dark Turquoise","#00BFFF":"Deep Sky Blue","#1E90FF":"Dodger Blue",
+  "#0000FF":"Blue","#00008B":"Dark Blue","#4B0082":"Indigo","#8A2BE2":"Blue Violet",
+  "#EE82EE":"Violet","#FF69B4":"Hot Pink","#FF1493":"Deep Pink","#C71585":"Medium Violet Red",
+  "#A0522D":"Sienna","#8B4513":"Saddle Brown","#D2691E":"Chocolate","#CD853F":"Peru",
+  "#BC8F8F":"Rosy Brown","#808080":"Gray","#A9A9A9":"Dark Gray","#C0C0C0":"Silver",
+  "#D3D3D3":"Light Grey","#708090":"Slate Gray"
+}; return map[(hex||"").toUpperCase()]||hex;}
+function escapeHTML(s){return (s||"").replace(/[&<>'"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
+
+/* ===== Canvas state ===== */
+const canvas=$("#canvas");
+let selected=null, seq=0, isDrag=false, dragOff={x:0,y:0};
+let isRotating=false, rotateStart=0, rotateBase=0;
+
+/* Undo / redo snapshots */
+const undoStack=[], redoStack=[];
+function snapshot(){undoStack.push(canvas.innerHTML); if(undoStack.length>60)undoStack.shift(); redoStack.length=0;}
+function restore(h){canvas.innerHTML=h; rebind(); selected=null;}
+function undo(){ if(!undoStack.length) return; const cur=canvas.innerHTML; const prev=undoStack.pop(); redoStack.push(cur); restore(prev); }
+function redo(){ if(!redoStack.length) return; const cur=canvas.innerHTML; const nxt=redoStack.pop(); undoStack.push(cur); restore(nxt); }
+
+/* File input for uploads */
+const fileInput=document.createElement("input");
+fileInput.type="file"; fileInput.accept="image/*"; fileInput.style.display="none";
+document.body.appendChild(fileInput);
+
+/* Rebind events for existing items */
+function rebind(){
+  $$(".item",canvas).forEach(n=>{
+    n.addEventListener("mousedown",startDrag);
+    n.addEventListener("click", pick);
+    ensureHandles(n);
+  });
+}
+
+/* Item selection + handles */
+function pick(e){ select(e.currentTarget); }
+function select(node){
+  selected?.classList.remove("selected");
+  selected=node; node.classList.add("selected");
+  ensureHandles(node);
+  syncPanel();
+}
+function deselect(){
+  if(selected){
+    selected.classList.remove("selected");
+    removeHandles(selected);
+  }
+  selected=null; syncPanel();
+}
+function ensureHandles(node){
+  removeHandles(node);
+  const h=document.createElement("div"); h.className="handles";
+  const x=document.createElement("div"); x.className="btnX"; x.textContent="✕";
+  const r=document.createElement("div"); r.className="btnRot"; r.textContent="⟲";
+  h.appendChild(x); h.appendChild(r); node.appendChild(h);
+
+  x.addEventListener("click",(e)=>{ e.stopPropagation(); snapshot(); node.remove(); selected=null; });
+  r.addEventListener("mousedown",(e)=>{
+    e.stopPropagation(); isRotating=true;
+    const rect=node.getBoundingClientRect();
+    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+    rotateStart=Math.atan2(e.clientY-cy, e.clientX-cx)*180/Math.PI;
+    rotateBase=parseFloat(node.dataset.rotate||0);
+    document.addEventListener("mousemove",rotDrag);
+    document.addEventListener("mouseup",rotStop);
+  });
+}
+function removeHandles(node){ node.querySelector(".handles")?.remove(); }
+function rotDrag(e){
+  if(!isRotating||!selected) return;
+  const rect=selected.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  const ang=Math.atan2(e.clientY-cy, e.clientX-cx)*180/Math.PI;
+  const deg = Math.round(rotateBase + (ang - rotateStart));
+  selected.dataset.rotate=deg;
+  selected.style.transform=`rotate(${deg}deg)`;
+  $("#rotateSlider").value=deg; $("#rotateNum").value=deg;
+}
+function rotStop(){ isRotating=false; document.removeEventListener("mousemove",rotDrag); document.removeEventListener("mouseup",rotStop); }
+
+/* Dragging */
+function startDrag(e){
+  if(e.target.closest(".btnX,.btnRot,input,select,.num")) return;
+  isDrag=true; select(e.currentTarget);
+  const r=selected.getBoundingClientRect(), c=canvas.getBoundingClientRect();
+  dragOff.x=e.clientX-r.left; dragOff.y=e.clientY-r.top; e.preventDefault();
+  document.addEventListener("mousemove",drag);
+  document.addEventListener("mouseup",stopDrag);
+}
+function drag(e){
+  if(!isDrag||!selected) return;
+  const c=canvas.getBoundingClientRect();
+  let x=e.clientX-c.left-dragOff.x, y=e.clientY-c.top-dragOff.y;
+  x=Math.max(0,Math.min(x,canvas.clientWidth - selected.offsetWidth));
+  y=Math.max(0,Math.min(y,canvas.clientHeight- selected.offsetHeight));
+  selected.style.left=x+"px"; selected.style.top=y+"px";
+}
+function stopDrag(){ isDrag=false; document.removeEventListener("mousemove",drag); document.removeEventListener("mouseup",stopDrag); }
+
+/* Tools */
+function tool(t){
+  $(".placeholder",canvas)?.remove();
+  if(t==="text"){ snapshot(); createText("Edit this text"); }
+  if(t==="upload"){
+    fileInput.onchange=()=>{
+      const f=fileInput.files?.[0];
+      snapshot();
+      if(f){ const rd=new FileReader(); rd.onload=e=>createImage(e.target.result); rd.readAsDataURL(f); }
+      else  { createImage(DEFAULT_IMAGE_URL); }
+      fileInput.value="";
+    };
+    fileInput.click();
+  }
+  if(t==="art"){ openArt(); }
+}
+function createImage(src){
+  seq++;
+  const n=document.createElement("div");
+  n.className="item image"; n.style.left="40px"; n.style.top="40px";
+  n.dataset.rotate="0";
+  n.innerHTML=`<div class="img-wrap"><img src="${src}" alt="upload"/></div>`;
+  canvas.appendChild(n); rebind(); select(n);
+  return n;
+}
+
+/* Text as SVG with shapes + optional background badge (scalable) */
+function textSVG(id, text, o){
+  const w=520,h=360,cx=w/2,cy=h/2;
+  let defs="", bg="", body="";
+  const scale = o.bgScale || 1;
+  if(o.bgShape && o.bgShape!=="none" && o.bgOpacity>0){
+    const estW = Math.max(o.fontSize*0.6*text.length, o.fontSize*2);
+    const estH = o.fontSize*1.2;
+    const pad  = o.fontSize*0.5;
+    if(o.bgShape==="rect"){
+      let bw=(estW+pad*2)*scale, bh=(estH+pad*2)*scale;
+      const x=cx-bw/2, y=cy-bh/2;
+      bg = `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${Math.min(16,pad*scale)}" fill="${o.bgColor}" fill-opacity="${o.bgOpacity}"></rect>`;
+    }else if(o.bgShape==="circle"){
+      const r = (Math.max(estW,estH)/2 + pad) * scale;
+      bg = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${o.bgColor}" fill-opacity="${o.bgOpacity}"></circle>`;
+    }
+  }
+  if(o.shape==="straight"){
+    body = `<text x="${cx}" y="${cy}" text-anchor="${o.anchor}" dominant-baseline="middle" font-family="${o.fontFamily}" font-size="${o.fontSize}" fill="${o.fill}" stroke="${o.stroke}" stroke-width="${o.strokeWidth}" paint-order="stroke">${escapeHTML(text)}</text>`;
+  }else if(o.shape==="arcUp"||o.shape==="arcDown"){
+    const r=o.curve, sweep=(o.shape==="arcUp")?0:1, startX=cx-r, endX=cx+r, y=cy, pid=`p-${id}`;
+    defs=`<defs><path id="${pid}" d="M ${startX} ${y} A ${r} ${r} 0 0 ${sweep} ${endX} ${y}"/></defs>`;
+    body=`<text font-family="${o.fontFamily}" font-size="${o.fontSize}" fill="${o.fill}" stroke="${o.stroke}" stroke-width="${o.strokeWidth}" paint-order="stroke"><textPath href="#${pid}" startOffset="50%" text-anchor="middle">${escapeHTML(text)}</textPath></text>`;
+  }else{ // circle
+    const d=o.curve, r=d/2, pid=`p-${id}`;
+    defs=`<defs><path id="${pid}" d="M ${cx},${cy} m -${r},0 a ${r},${r} 0 1,1 ${d},0 a ${r},${r} 0 1,1 -${d},0"/></defs>`;
+    body=`<text font-family="${o.fontFamily}" font-size="${o.fontSize}" fill="${o.fill}" stroke="${o.stroke}" stroke-width="${o.strokeWidth}" paint-order="stroke"><textPath href="#${pid}" startOffset="25%">${escapeHTML(text)}</textPath></text>`;
+  }
+  return `<svg class="text-svg" width="520" height="360" viewBox="0 0 520 360">${defs}${bg}${body}</svg>`;
+}
+function createText(txt){
+  seq++;
+  const n=document.createElement("div");
+  n.className="item text"; n.style.left="120px"; n.style.top="120px";
+  n.dataset.content=txt; n.dataset.fontFamily="Lily Script One"; n.dataset.fontSize="64";
+  n.dataset.fill="#ff3333"; n.dataset.stroke="#00ffff"; n.dataset.strokeWidth="0";
+  n.dataset.anchor="middle"; n.dataset.shape="circle"; n.dataset.curve="120";
+  n.dataset.rotate="0";
+  n.dataset.bgShape="circle"; n.dataset.bgColor="#ffffff"; n.dataset.bgOpacity="0"; n.dataset.bgScale="1";
+  n.innerHTML = textSVG(`t${seq}`, txt, optionsFromNode(n));
+  canvas.appendChild(n); rebind(); select(n);
+  return n;
+}
+function optionsFromNode(n){
+  return {
+    fontFamily:n.dataset.fontFamily, fontSize:+n.dataset.fontSize, fill:n.dataset.fill,
+    stroke:n.dataset.stroke, strokeWidth:+n.dataset.strokeWidth, anchor:n.dataset.anchor,
+    shape:n.dataset.shape, curve:+n.dataset.curve,
+    bgShape:n.dataset.bgShape, bgColor:n.dataset.bgColor, bgOpacity:+n.dataset.bgOpacity, bgScale:+n.dataset.bgScale
+  };
+}
+function rerender(){
+  if(!selected || !selected.classList.contains("text")) return;
+  const o=optionsFromNode(selected);
+  selected.innerHTML = textSVG(`t${Date.now()}`, selected.dataset.content||"", o);
+  selected.style.transform = `rotate(${selected.dataset.rotate||0}deg)`;
+  ensureHandles(selected);
+}
+
+/* ===== Editor wiring ===== */
+const textContent=$("#textContent");
+const addTextBtn=$("#addTextBtn");
+const fontFamily=$("#fontFamily"), fontPreview=$("#fontPreview");
+const fillChip=$("#fillChip"), fillName=$("#fillName");
+const rotateSlider=$("#rotateSlider"), rotateNum=$("#rotateNum");
+const outlineSlider=$("#outlineSlider"), strokeChip=$("#strokeChip"), strokeName=$("#strokeName");
+const fontSize=$("#fontSize");
+const alL=$("#alL"), alC=$("#alC"), alR=$("#alR");
+const shapeVal=$("#shapeVal");
+const bgStatus=$("#bgStatus"), bgShape=$("#bgShape"), bgColor=$("#bgColor"), bgOpacity=$("#bgOpacity"), bgOpacityVal=$("#bgOpacityVal"), bgScale=$("#bgScale"), bgScaleNum=$("#bgScaleNum");
+
+/* Add new text button */
+addTextBtn.addEventListener("click", ()=>{
+  const val = (textContent.value||"").trim() || "New Text";
+  snapshot();
+  const n = createText(val);
+  select(n);
+});
+
+/* sync panel from selection */
+function syncPanel(){
+  const isText = selected && selected.classList.contains("text");
+
+  const fill = isText? selected.dataset.fill : "#ff3333";
+  const stroke = isText? selected.dataset.stroke : "#00ffff";
+  const rot = isText? +(selected.dataset.rotate||0) : 0;
+  const sw = isText? +(selected.dataset.strokeWidth||0) : 0;
+  const fs = isText? +(selected.dataset.fontSize||64) : 64;
+  const fam = isText? selected.dataset.fontFamily : "Lily Script One";
+  const shape = isText? selected.dataset.shape : "circle";
+  const anchor = isText? selected.dataset.anchor : "middle";
+
+  textContent.value = isText? selected.dataset.content || "" : "";
+  fontFamily.value=fam; fontPreview.style.fontFamily=fam; fontPreview.textContent=fam;
+
+  fillChip.style.background=fill; fillName.textContent=nameColor(fill);
+  strokeChip.style.background=stroke; strokeName.textContent=nameColor(stroke);
+
+  rotateSlider.value=rotateNum.value=rot;
+  outlineSlider.value=sw; fontSize.value=fs;
+
+  shapeVal.textContent = shape==='straight'?'Straight':shape==='arcUp'?'Arc Up':shape==='arcDown'?'Arc Down':'Circle';
+
+  alL.classList.toggle("active", anchor==="start");
+  alC.classList.toggle("active", anchor==="middle");
+  alR.classList.toggle("active", anchor==="end");
+
+  const bShape = isText? selected.dataset.bgShape : "none";
+  const bColor = isText? selected.dataset.bgColor : "#ffffff";
+  const bOp    = isText? +selected.dataset.bgOpacity : 0;
+  const bSc    = isText? +(selected.dataset.bgScale||1) : 1;
+  bgShape.value=bShape; bgColor.value=bColor; bgOpacity.value=bOp; bgOpacityVal.textContent=bOp.toString();
+  bgScale.value=bSc; bgScaleNum.value=bSc;
+  bgStatus.textContent = (bShape==="none" || bOp===0) ? "Off" : (bShape[0].toUpperCase()+bShape.slice(1));
+}
+
+/* inputs */
+textContent.addEventListener("input",()=>{ if(selected?.classList.contains("text")){ selected.dataset.content=textContent.value; rerender(); }});
+fontFamily.addEventListener("change",()=>{ fontPreview.style.fontFamily=fontFamily.value; fontPreview.textContent=fontFamily.value; if(selected?.classList.contains("text")){ selected.dataset.fontFamily=fontFamily.value; rerender(); }});
+
+rotateSlider.addEventListener("input",e=>{ rotateNum.value=e.target.value; if(selected){ selected.dataset.rotate=e.target.value; selected.style.transform=`rotate(${e.target.value}deg)`; }});
+rotateNum.addEventListener("input",e=>{ rotateSlider.value=e.target.value; if(selected){ selected.dataset.rotate=e.target.value; selected.style.transform=`rotate(${e.target.value}deg)`; }});
+
+/* OUTLINE: live while dragging, bigger max */
+outlineSlider.addEventListener("input",e=>{ if(selected?.classList.contains("text")){ selected.dataset.strokeWidth=e.target.value; rerender(); }});
+
+/* SIZE: rerender (outline shows correct vs size) */
+fontSize.addEventListener("input",()=>{ if(selected?.classList.contains("text")){ selected.dataset.fontSize=fontSize.value; rerender(); }});
+
+function setAlign(a){
+  alL.classList.toggle("active", a==='start'); alC.classList.toggle("active", a==='middle'); alR.classList.toggle("active", a==='end');
+  if(selected?.classList.contains("text")){ selected.dataset.anchor=a; rerender(); }
+}
+
+/* Background badge */
+bgShape.addEventListener("change",()=>{ if(!selected?.classList.contains("text")) return; selected.dataset.bgShape=bgShape.value; bgStatus.textContent=(bgShape.value==="none"?"Off":bgShape.value[0].toUpperCase()+bgShape.value.slice(1)); rerender(); });
+bgColor.addEventListener("input",()=>{ if(!selected?.classList.contains("text")) return; selected.dataset.bgColor=bgColor.value; rerender(); });
+bgOpacity.addEventListener("input",()=>{ bgOpacityVal.textContent=bgOpacity.value; if(!selected?.classList.contains("text")) return; selected.dataset.bgOpacity=bgOpacity.value; bgStatus.textContent=(bgShape.value==="none"||+bgOpacity.value===0?"Off":bgShape.value[0].toUpperCase()+bgShape.value.slice(1)); rerender(); });
+bgScale.addEventListener("input",()=>{ bgScaleNum.value=bgScale.value; if(!selected?.classList.contains("text")) return; selected.dataset.bgScale=bgScale.value; rerender(); });
+bgScaleNum.addEventListener("input",()=>{ let v=parseFloat(bgScaleNum.value||1); v=Math.max(0.5,Math.min(2,v)); bgScale.value=v; if(!selected?.classList.contains("text")) return; selected.dataset.bgScale=v; rerender(); });
+
+/* ========= Color palette modal ========= */
+const PALETTE = [
+  "#000000","#202124","#5f6368","#9aa0a6","#ff69b4","#ff1493","#b03060",
+  "#8b0000","#b22222","#dc143c","#ff4500","#ff8c00","#ffa500","#ffd700",
+  "#ffff00","#f0e68c","#adff2f","#7cfc00","#00ff00","#32cd32","#008000",
+  "#006400","#00ffff","#00ced1","#00bfff","#1e90ff","#0000ff","#00008b",
+  "#4b0082","#8a2be2","#ee82ee","#9370db","#ba55d3","#dda0dd","#ffb6c1",
+  "#ff7f50","#d2691e","#cd853f","#bc8f8f","#8b4513","#a0522d","#808080",
+  "#a9a9a9","#c0c0c0","#d3d3d3","#708090","#6b8e23","#556b2f","#2e8b57",
+  "#3cb371","#20b2aa","#4682b4","#5f9ea0","#6495ed","#4169e1","#483d8b",
+  "#696969","#b8860b","#8fbc8f","#c71585","#ff6347","#fa8072","#ffa07a",
+  "#f4a460","#ffe4b5","#fff8dc","#fffaf0","#ffffff"
+];
+let paletteTarget="fill";  // 'fill' or 'stroke'
+let paletteSelected=null;
+
+function openFillPalette(){ paletteTarget='fill'; $("#paletteTitle").textContent="Font Colors"; buildPalette(selected?.dataset.fill||"#ff3333"); openModal('colorModal'); }
+function openStrokePalette(){ paletteTarget='stroke'; $("#paletteTitle").textContent="Outline Colors"; buildPalette(selected?.dataset.stroke||"#00ffff"); openModal('colorModal'); }
+
+function buildPalette(current){
+  const grid=$("#paletteGrid"); grid.innerHTML="";
+  paletteSelected = (current||"").toLowerCase();
+  $("#whiteChk").checked = (paletteSelected==="#ffffff");
+  PALETTE.forEach(hex=>{
+    const sw=document.createElement("div");
+    sw.className="swatch"; sw.style.background=hex;
+    if(hex.toLowerCase()===paletteSelected) sw.classList.add("selected");
+    sw.addEventListener("click", ()=>{
+      $$(".swatch",grid).forEach(s=>s.classList.remove("selected"));
+      sw.classList.add("selected");
+      $("#whiteChk").checked = (hex.toLowerCase()==="#ffffff");
+      paletteSelected = hex.toLowerCase();
+    });
+    grid.appendChild(sw);
+  });
+}
+$("#whiteChk").addEventListener("change", (e)=>{
+  if(e.target.checked){ paletteSelected = "#ffffff";
+    $$(".swatch", $("#paletteGrid")).forEach(s=>s.classList.remove("selected"));
+  }
+});
+$("#paletteDone").addEventListener("click", ()=>{
+  if(!selected?.classList.contains("text")){ closeModal('colorModal'); return; }
+  const hex = paletteSelected || "#ffffff";
+  if(paletteTarget==='fill'){
+    selected.dataset.fill=hex; fillChip.style.background=hex; fillName.textContent=nameColor(hex);
+  }else{
+    selected.dataset.stroke=hex; strokeChip.style.background=hex; strokeName.textContent=nameColor(hex);
+  }
+  rerender(); closeModal('colorModal');
+});
+
+/* open palette on chips */
+fillChip.addEventListener("click", openFillPalette);
+strokeChip.addEventListener("click", openStrokePalette);
+
+/* ========= Shapes ========= */
+function openShapes(){
+  if(!selected?.classList.contains("text")) return;
+  $("#shStraight").classList.toggle("active", selected.dataset.shape==="straight");
+  $("#shArcUp").classList.toggle("active", selected.dataset.shape==="arcUp");
+  $("#shArcDown").classList.toggle("active", selected.dataset.shape==="arcDown");
+  $("#shCircle").classList.toggle("active", selected.dataset.shape==="circle");
+  $("#curveSlider").value = $("#curveNum").value = selected.dataset.curve || 120;
+  openModal("shapeModal");
+}
+function chooseShape(s){
+  ["shStraight","shArcUp","shArcDown","shCircle"].forEach(id=>$("#"+id).classList.remove("active"));
+  if(s==="straight") $("#shStraight").classList.add("active");
+  if(s==="arcUp") $("#shArcUp").classList.add("active");
+  if(s==="arcDown") $("#shArcDown").classList.add("active");
+  if(s==="circle") $("#shCircle").classList.add("active");
+  selected.dataset.shape=s; shapeVal.textContent = s==='straight'?'Straight':s==='arcUp'?'Arc Up':s==='arcDown'?'Arc Down':'Circle'; rerender();
+}
+$("#curveSlider").addEventListener("input", e=> $("#curveNum").value=e.target.value);
+$("#curveNum").addEventListener("input", e=> $("#curveSlider").value=e.target.value);
+$("#curveSlider").addEventListener("change", ()=>{ if(selected){ selected.dataset.curve=$("#curveSlider").value; rerender(); }});
+$("#curveNum").addEventListener("change", ()=>{ if(selected){ selected.dataset.curve=$("#curveNum").value; rerender(); }});
+
+/* ===== Art (demo) ===== */
+const ART={"Shapes":[circleIcon(),squareIcon(),starIcon(),triangleIcon()],"Vehicles":[carIcon(),busIcon(),planeIcon()],"Emojis":[smileIcon()]};
+function openArt(){
+  const tabs=$("#artTabs"), grid=$("#artGrid");
+  const cats=Object.keys(ART); let cur=cats[0];
+  const rt=()=>{ tabs.innerHTML=""; cats.forEach(c=>{ const b=document.createElement("button"); b.className="btn"+(c===cur?" active":""); b.textContent=c; b.onclick=()=>{cur=c; rt(); rg();}; tabs.appendChild(b);}); };
+  const rg=()=>{ grid.innerHTML=""; ART[cur].forEach(svg=>{ const t=document.createElement("div"); t.className="tile"; t.innerHTML=svg; t.onclick=()=>{ snapshot(); const n=document.createElement("div"); n.className="item"; n.style.left="60px"; n.style.top="60px"; n.dataset.rotate="0"; n.innerHTML=`<div class="img-wrap"><svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8">${extract(svg)}</svg></div>`; canvas.appendChild(n); rebind(); select(n); closeModal("artModal"); }; grid.appendChild(t);}); };
+  rt(); rg(); openModal("artModal");
+}
+function extract(s){ const d=document.createElement("div"); d.innerHTML=s.trim(); const v=d.querySelector("svg"); return v?v.innerHTML:s; }
+function circleIcon(){return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>`}
+function squareIcon(){return `<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>`}
+function starIcon(){return `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.9L18.18 22 12 18.6 5.82 22 7 14.17l-5-4.9 6.91-1.01z"/></svg>`}
+function triangleIcon(){return `<svg viewBox="0 0 24 24"><path d="M12 4l8 16H4z"/></svg>`}
+function carIcon(){return `<svg viewBox="0 0 24 24"><path d="M3 13l2-4 4-2h6l4 2 2 4v4h-2a2 2 0 11-4 0H9a2 2 0 11-4 0H3z"/></svg>`}
+function busIcon(){return `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="16" height="12" rx="2"/><circle cx="7" cy="19" r="1.4"/><circle cx="15" cy="19" r="1.4"/></svg>`}
+function planeIcon(){return `<svg viewBox="0 0 24 24"><path d="M2.5 19l19-7-19-7 6 7-6 7z"/></svg>`}
+function smileIcon(){return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M8 15c1.8 1.6 4.2 1.6 6 0"/></svg>`}
+
+/* Product placeholder */
+function openProduct(){ openModal('productModal'); }
+
+/* Canvas clicks & delete */
+canvas.addEventListener("click",(e)=>{ if(e.target===canvas || e.target.classList.contains("placeholder")) deselect(); });
+document.addEventListener("keydown",(e)=>{ if(e.key==="Delete" && selected){ snapshot(); selected.remove(); selected=null; if(!canvas.querySelector(".item")) canvas.innerHTML=`<div class="placeholder"><h3>Start Creating</h3><p>Use the tools on the left to add elements.</p></div>`; }});
+
+/* INIT */
+createText("Edit this text"); syncPanel();
+</script>
+</body>
+</html>
