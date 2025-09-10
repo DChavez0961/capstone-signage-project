@@ -8,6 +8,7 @@ body {
   height: 100vh;   /* ⬅ ensures body fits full viewport height */
 }
 
+
 /* === Navbar === */
 .navbar {
   display: flex;
