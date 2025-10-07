@@ -1,123 +1,223 @@
-// Customer Profile Dashboard JavaScript
-
+// Customer Profile Dashboard — functions only (design untouched)
 class CustomerProfile {
-    constructor() {
-        this.isEditing = false;
-        this.hasUnsavedChanges = false;
-        this.originalProfile = {};
-        
-        // Store original profile data
-        this.storeOriginalProfile();
-        
-        // Initialize event listeners
-        this.initializeEventListeners();
-        
-        // Initialize password toggles
-        this.initializePasswordToggles();
-    }
+  constructor() {
+    this.isEditing = false;
+    this.hasUnsavedChanges = false;
+    this.originalProfile = {};
 
-    // Store the original profile data for comparison
-    storeOriginalProfile() {
-        const formData = new FormData(document.getElementById('profile-form'));
-        this.originalProfile = {};
-        for (let [key, value] of formData.entries()) {
-            this.originalProfile[key] = value;
+    // Cache elements
+    this.form = document.getElementById('profile-form');
+    this.editBtn = document.getElementById('edit-profile-btn');
+    this.saveBtn = document.getElementById('save-profile-btn');
+    this.cancelBtn = document.getElementById('cancel-profile-btn');
+    this.saveCancelGroup = document.getElementById('save-cancel-btns');
+
+    if (!this.form) return;
+
+    // Init
+    this.storeOriginalProfile();
+    this.initializeNavigation();
+    this.initializeProfileManagement();
+    this.initializePasswordManagement();
+    this.initializeChangeTracking();
+    this.initializePasswordToggles();
+
+    // Defaults
+    if (this.saveCancelGroup) this.saveCancelGroup.style.display = 'none';
+    this.updateSaveButtonState();
+  }
+
+  // Save original values for cancel/compare
+  storeOriginalProfile() {
+    this.originalProfile = {};
+    const fd = new FormData(this.form);
+    for (const [k, v] of fd.entries()) this.originalProfile[k] = v;
+  }
+
+  // Tabs
+  initializeNavigation() {
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const sections = document.querySelectorAll('.content-section');
+
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (this.isEditing && this.hasUnsavedChanges) {
+          const leave = confirm('You have unsaved changes. Leave this section?');
+          if (!leave) return;
+          this.cancelProfileEdit(false); // silent restore
         }
+        const tab = button.getAttribute('data-tab');
+        navButtons.forEach(b => b.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        button.classList.add('active');
+        const target = document.getElementById(`${tab}-section`);
+        if (target) target.classList.add('active');
+      });
+    });
+  }
+
+  // Edit/Save/Cancel wiring
+  initializeProfileManagement() {
+    if (!this.editBtn || !this.saveBtn || !this.cancelBtn) return;
+
+    this.editBtn.addEventListener('click', () => this.startProfileEdit());
+    this.saveBtn.addEventListener('click', () => this.saveProfile());
+    this.cancelBtn.addEventListener('click', () => this.cancelProfileEdit(true));
+
+    // inputs start disabled
+    this.toggleInputs(false);
+  }
+
+  startProfileEdit() {
+    if (this.isEditing) return;
+    this.isEditing = true;
+    this.hasUnsavedChanges = false;
+    this.toggleInputs(true);
+    this.editBtn.style.display = 'none';
+    this.saveCancelGroup.style.display = 'inline-flex';
+    this.updateSaveButtonState();
+  }
+
+  cancelProfileEdit(ask = true) {
+    if (ask) {
+      const ok = confirm('Discard your changes?');
+      if (!ok) return;
+    }
+    // restore original values
+    this.form.querySelectorAll('input').forEach(inp => {
+      const name = inp.name;
+      if (name in this.originalProfile) inp.value = this.originalProfile[name];
+      inp.classList.remove('changed');
+    });
+    this.isEditing = false;
+    this.hasUnsavedChanges = false;
+    this.toggleInputs(false);
+    this.saveCancelGroup.style.display = 'none';
+    this.editBtn.style.display = 'inline-flex';
+    this.updateSaveButtonState();
+  }
+
+  // Save (client-side; wire to backend if needed)
+  saveProfile() {
+    const emailEl = document.getElementById('email');
+    if (emailEl) {
+      const email = emailEl.value.trim();
+      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!valid) {
+        alert('Please enter a valid email.');
+        emailEl.focus();
+        return;
+      }
     }
 
-    // Initialize all event listeners
-    initializeEventListeners() {
-        // Navigation
-        this.initializeNavigation();
-        
-        // Profile management
-        this.initializeProfileManagement();
-        
-        // Password change
-        this.initializePasswordManagement();
-        
-        // Form change tracking
-        this.initializeChangeTracking();
-    }
+    // (Optional) You can add validation for zipCode here if needed
+    // const zip = document.getElementById('zipCode')?.value?.trim();
 
-    // Navigation between sections
-    initializeNavigation() {
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const contentSections = document.querySelectorAll('.content-section');
+    // TODO: replace with your real API call
+    // fetch('/controllers/UserController.php?action=updateProfile', { method:'POST', body:new FormData(this.form), credentials:'include' })
 
-        navButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Check for unsaved changes before switching
-                if (this.hasUnsavedChanges) {
-                    if (!confirm('You have unsaved changes. Are you sure you want to leave this section?')) {
-                        return;
-                    }
-                    this.cancelProfileEdit();
-                }
+    // Save new originals
+    this.storeOriginalProfile();
 
-                const tabId = button.getAttribute('data-tab');
-                
-                // Update navigation
-                navButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                // Update content
-                contentSections.forEach(section => section.classList.remove('active'));
-                const targetSection = document.getElementById(`${tabId}-section`);
-                if (targetSection) {
-                    targetSection.classList.add('active');
-                }
-            });
-        });
-    }
+    // Update welcome name from full name
+    const fullName = this.originalProfile.fullName || '';
+    const welcome = document.getElementById('welcome-name');
+    if (welcome) welcome.textContent = fullName || 'Customer';
 
-    // Profile editing functionality
-    initializeProfileManagement() {
-        const editBtn = document.getElementById('edit-profile-btn');
-        const saveBtn = document.getElementById('save-profile-btn');
-        const cancelBtn = document.getElementById('cancel-profile-btn');
+    this.isEditing = false;
+    this.hasUnsavedChanges = false;
+    this.toggleInputs(false);
+    this.saveCancelGroup.style.display = 'none';
+    this.editBtn.style.display = 'inline-flex';
+    this.updateSaveButtonState();
 
-        editBtn.addEventListener('click', () => this.startProfileEdit());
-        saveBtn.addEventListener('click', () => this.saveProfile());
-        cancelBtn.addEventListener('click', () => this.cancelProfileEdit());
-    }
+    alert('Profile saved successfully!');
+  }
 
-    // Password management
-    initializePasswordManagement() {
-        const changePasswordBtn = document.getElementById('change-password-btn');
-        changePasswordBtn.addEventListener('click', () => this.changePassword());
-    }
+  // Inputs enable/disable
+  toggleInputs(enabled) {
+    this.form.querySelectorAll('input').forEach(inp => {
+      inp.disabled = !enabled;
+      if (!enabled) inp.classList.remove('changed');
+    });
+  }
 
-    // Track form changes
-    initializeChangeTracking() {
-        const formInputs = document.querySelectorAll('#profile-form input');
-        formInputs.forEach(input => {
-            input.addEventListener('input', () => {
-                if (this.isEditing) {
-                    this.hasUnsavedChanges = true;
-                    input.classList.add('changed');
-                    this.updateSaveButtonState();
-                }
-            });
-        });
-    }
+  // Track changes & enable Save
+  initializeChangeTracking() {
+    this.form.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        if (!this.isEditing) return;
+        const name = inp.name;
+        const orig = this.originalProfile[name] ?? '';
+        const changed = inp.value !== orig;
+        inp.classList.toggle('changed', changed);
+        this.hasUnsavedChanges = this.form.querySelectorAll('input.changed').length > 0;
+        this.updateSaveButtonState();
+      });
+    });
 
-    // Initialize password visibility toggles
-    initializePasswordToggles() {
-        const toggleButtons = document.querySelectorAll('.password-toggle');
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.getAttribute('data-target');
-                const targetInput = document.getElementById(targetId);
-                const icon = button.querySelector('i');
-                
-                if (targetInput.type === 'password') {
-                    targetInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    targetInput.type = 'password'; }
-            });
-        });
-    }
+    // Optional: load cached values if you want (left out to avoid changing data flow)
+  }
+
+  updateSaveButtonState() {
+    if (!this.saveBtn) return;
+    this.saveBtn.disabled = !(this.isEditing && this.hasUnsavedChanges);
+  }
+
+  // Password change
+  initializePasswordManagement() {
+    const changeBtn = document.getElementById('change-password-btn');
+    if (!changeBtn) return;
+    changeBtn.addEventListener('click', () => {
+      const p1 = (document.getElementById('newPassword') || {}).value || '';
+      const p2 = (document.getElementById('confirmPassword') || {}).value || '';
+      if (!p1 || p1.length < 8) {
+        alert('New password must be at least 8 characters.');
+        document.getElementById('newPassword')?.focus();
+        return;
+      }
+      if (p1 !== p2) {
+        alert('New password and confirmation do not match.');
+        document.getElementById('confirmPassword')?.focus();
+        return;
+      }
+
+      // TODO: replace with your real API call
+      // fetch('/controllers/UserController.php?action=changePassword', { method:'POST', body:new URLSearchParams({ newPassword: p1 }), credentials:'include' })
+
+      alert('Password changed successfully!');
+      document.getElementById('password-form')?.reset();
+
+      // reset icons/types
+      document.querySelectorAll('.password-toggle i').forEach(i => {
+        i.classList.remove('fa-eye-slash');
+        i.classList.add('fa-eye');
+      });
+      document.querySelectorAll('#password-form input').forEach(inp => inp.type = 'password');
+    });
+  }
+
+  // Eye icon toggles
+  initializePasswordToggles() {
+    document.querySelectorAll('.password-toggle').forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-target');
+        const targetInput = document.getElementById(targetId);
+        const icon = button.querySelector('i');
+        if (!targetInput) return;
+
+        if (targetInput.type === 'password') {
+          targetInput.type = 'text';
+          icon?.classList.remove('fa-eye');
+          icon?.classList.add('fa-eye-slash');
+        } else {
+          targetInput.type = 'password';
+          icon?.classList.remove('fa-eye-slash');
+          icon?.classList.add('fa-eye');
+        }
+      });
+    });
+  }
 }
+
+window.addEventListener('DOMContentLoaded', () => new CustomerProfile());

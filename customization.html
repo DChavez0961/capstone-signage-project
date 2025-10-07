@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Your Design</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Lily+Script+One&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lily+Script+One&family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lily+Script+One&family=Pacifico&family=Lobster&family=Dancing+Script&family=Great+Vibes&family=Sacramento&family=Playfair+Display:wght@400;700&family=Bebas+Neue&family=Oswald:wght@400;700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&family=Abril+Fatface&family=Caveat&family=Satisfy&family=Righteous&family=Anton&family=Permanent+Marker&family=Indie+Flower&family=Amatic+SC&family=Comfortaa&family=Shadows+Into+Light&display=swap" rel="stylesheet">
 
   <!-- App CSS -->
-  <link rel="stylesheet" href="customization/customization.css" />
+  <link rel="stylesheet" href="customization\customization.css"/>
 </head>
 <body>
-    <!-- Navbar -->
+  <!-- Navbar -->
   <header class="navbar">
-    <img src="assets/images/Store Logo/logo.png" alt="" />
+    <div class="logo">
+      <img src="assets/images/Store Logo/logo.png" alt="" style="height:40px"/>
+    </div>
     <nav>
       <ul>
-        <li><a href="homepage.html">Home</a></li>
-        <li><a href="pcatlog.html">Products</a></li>
-        <li><a href="customization.html">Customize</a></li>
-        <li><a href="aboutus.html">About Us</a></li>
-        <li><a href="contactus.html">Contact Us</a></li>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a class="active" href="#">Customize</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
       </ul>
     </nav>
   </header>
 
-
   <div class="app">
-    <!-- Left rail -->
+    <!-- Left Rail -->
     <div class="rail">
       <div class="tab" id="btnUpload" title="Upload image">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -38,7 +42,7 @@
         <div class="lbl">UPLOAD</div>
       </div>
 
-      <div class="tab active" id="btnAddText" title="Add text">
+      <div class="tab" id="btnAddText" title="Add text">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
         </svg>
@@ -52,28 +56,90 @@
         </svg>
         <div class="lbl">ADD ART</div>
       </div>
+
+      <div class="tab" id="btnTemplates" title="Templates">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <div class="lbl">TEMPLATES</div>
+      </div>
     </div>
 
-    <!-- Right: Editor panel -->
+    <!-- Right: Editor column -->
     <div class="editor">
-      <div class="ed-head">Edit Text</div>
-      <div class="ed-body">
-        <!-- Text input -->
+      <div class="ed-head" id="edTitle">How do you want to start?</div>
+
+      <!-- START HUB -->
+      <div class="ed-body" id="panel-start">
+        <div class="start-grid">
+          <button class="start-card" data-go="upload">
+            <div class="big-emoji">📤</div>
+            <div class="title">Upload Image</div>
+            <div class="sub">PNG / JPG / SVG</div>
+          </button>
+
+          <button class="start-card" data-go="addTextIntro">
+            <div class="big-emoji">🔤</div>
+            <div class="title">Add Text</div>
+            <div class="sub">Start with words</div>
+          </button>
+
+          <button class="start-card" data-go="addArt">
+            <div class="big-emoji">🎨</div>
+            <div class="title">Add Art</div>
+            <div class="sub">Built-in shapes</div>
+          </button>
+
+          <button class="start-card" data-go="templates">
+            <div class="big-emoji">🧩</div>
+            <div class="title">Templates</div>
+            <div class="sub">Quick presets</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="ed-body" id="panel-upload" style="display:none">
+        <div class="upload-wrap">
+          <div id="dropZone" class="dropzone">
+            <p><strong>Drag & drop</strong> image here</p>
+            <p class="muted">or</p>
+            <button class="btn" id="browseBtn">Browse Files</button>
+            <p class="muted">PNG, JPG, or SVG</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD TEXT INTRO -->
+      <div class="ed-body" id="panel-addTextIntro" style="display:none">
+        <div class="row single">
+          <input id="addTextInput" class="input" placeholder="Type your text..."/>
+        </div>
+        <div class="row single">
+          <button class="btn primary full" id="addTextToDesign">Add to Canvas</button>
+        </div>
+        <div class="row single mini-hint">
+          Tip: after adding, use the full editor to change font, color, outline, shape, etc.
+        </div>
+      </div>
+
+      <!-- FULL EDITOR (Edit Text) -->
+      <div class="ed-body" id="panel-editText" style="display:none">
         <div class="row single">
           <input id="textContent" class="input" placeholder="Add Text Here..."/>
         </div>
 
-        <!-- Add text button -->
         <div class="row single">
           <button id="addTextBtn" class="btn full">+ Add New Text</button>
         </div>
 
-        <!-- Font preview -->
         <div class="row single">
           <div id="fontPreview" class="preview-font">Lily Script One</div>
         </div>
 
-        <!-- Change font -->
         <div class="row">
           <div class="label">Change<br/>Font</div>
           <div class="select-wrap">
@@ -87,7 +153,6 @@
           </div>
         </div>
 
-        <!-- Fill color -->
         <div class="row">
           <div class="label">Edit Color</div>
           <div class="row-split">
@@ -97,7 +162,6 @@
           </div>
         </div>
 
-        <!-- Rotation -->
         <div class="row">
           <div class="label">Rotation</div>
           <div class="input-row">
@@ -106,7 +170,6 @@
           </div>
         </div>
 
-        <!-- Outline -->
         <div class="row">
           <div class="label">Outline</div>
           <div class="row-split" style="width:100%">
@@ -119,21 +182,7 @@
           <div class="mini" style="text-align:right">Very Thick</div>
         </div>
 
-        <!-- Text Background header (shape dropdown here) -->
-        <div class="row">
-          <div class="label">Text Background</div>
-          <div class="select-wrap" style="max-width:220px;">
-            <select id="bgShape" class="select-clean">
-              <option value="none">None</option>
-              <option value="rect">Rectangle</option>
-              <option value="circle">Circle</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Background Options -->
         <div class="row single" id="bgOptions">
-          <!-- Background color + opacity -->
           <div class="subrow">
             <div class="label">Background</div>
             <div class="subright stack">
@@ -150,7 +199,6 @@
             </div>
           </div>
 
-          <!-- Rectangle dimensions -->
           <div class="subrow" id="rectDims" style="display:none">
             <div class="label">Dimensions</div>
             <div class="subright stack">
@@ -167,7 +215,6 @@
             </div>
           </div>
 
-          <!-- Circle radius -->
           <div class="subrow" id="circleDims" style="display:none">
             <div class="label">Dimensions</div>
             <div class="subright stack">
@@ -180,7 +227,6 @@
           </div>
         </div>
 
-        <!-- Text shape -->
         <div class="row" id="openShapeModal" style="cursor:pointer">
           <div class="label">Text Shape</div>
           <div class="row-split">
@@ -188,7 +234,6 @@
           </div>
         </div>
 
-        <!-- Text size (slider + number) -->
         <div class="row">
           <div class="label">Text Size</div>
           <div class="input-row">
@@ -197,7 +242,6 @@
           </div>
         </div>
 
-        <!-- Alignment buttons (no large labels) -->
         <div class="row single">
           <div class="aligns">
             <button id="alL" class="btn" title="Align Left">☰◻◻</button>
@@ -206,13 +250,54 @@
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="row single">
           <div class="actions">
             <button class="btn" id="btnCenter">Center on Canvas</button>
             <button class="btn" id="btnSave">Save Image</button>
             <button class="btn primary" id="btnQuote">Get Quote</button>
           </div>
+        </div>
+      </div>
+
+      <!-- TEMPLATES -->
+      <div class="ed-body" id="panel-templates" style="display:none">
+        <div class="template-grid">
+          <button class="template-card" data-template="sale">
+            <div class="title">Big Sale</div>
+            <div class="sub">Bold headline</div>
+          </button>
+          <button class="template-card" data-template="open">
+            <div class="title">Open Hours</div>
+            <div class="sub">Simple schedule</div>
+          </button>
+          <button class="template-card" data-template="generic">
+            <div class="title">Plain Title</div>
+            <div class="sub">Start clean</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ADD ART PANEL -->
+      <div class="ed-body" id="panel-addArt" style="display:none">
+        <div class="art-search" style="margin-bottom:10px;padding:0 4px">
+          <input id="artSearch" class="input" placeholder="Search for artwork"/>
+        </div>
+
+        <!-- category cards -->
+        <div id="artCatGrid" class="cat-grid" style="padding:0 4px">
+          <button class="cat-card" data-cat="shapes">Shapes</button>
+          <button class="cat-card" data-cat="emoji">Emoji</button>
+          <button class="cat-card" data-cat="nature">Nature</button>
+          <button class="cat-card" data-cat="vehicles">Vehicles</button>
+          <button class="cat-card" data-cat="animals">Animals</button>
+          <button class="cat-card" data-cat="roadsigns">Road Signs</button>
+        </div>
+
+        <!-- items grid (populated by JS) -->
+        <div id="artItemGrid" class="art-grid" style="display:none;padding:0 4px"></div>
+
+        <div class="row single" style="padding:12px 4px">
+          <button class="btn primary full" id="artAddBtn" disabled>Add to Canvas</button>
         </div>
       </div>
     </div>
@@ -243,7 +328,7 @@
   </div>
 
   <!-- Hidden file input -->
-  <input id="hiddenFile" type="file" accept="image/*" style="display:none" />
+  <input id="hiddenFile" type="file" accept="image/*" style="display:none"/>
 
   <!-- SHAPE MODAL -->
   <div id="shapeModal" class="modal-wrap">
@@ -287,43 +372,12 @@
     </div>
   </div>
 
-  <!-- ART MODAL (categories) -->
-  <div id="artModal" class="modal-wrap" style="display:none">
-    <div class="modal">
-      <div class="mhead">
-        <strong>Add Art</strong>
-        <button class="x" data-close="#artModal">✕</button>
-      </div>
-      <div class="mbody">
-        <div class="art-search">
-          <input id="artSearch" class="input" placeholder="Search for artwork"/>
-        </div>
-
-        <!-- category cards -->
-        <div id="artCatGrid" class="cat-grid">
-          <button class="cat-card" data-cat="shapes">Shapes</button>
-          <button class="cat-card" data-cat="emoji">Emoji</button>
-          <button class="cat-card" data-cat="nature">Nature</button>
-          <button class="cat-card" data-cat="vehicles">Vehicles</button>
-          <button class="cat-card" data-cat="animals">Animals</button>
-          <button class="cat-card" data-cat="roadsigns">Road Signs</button>
-        </div>
-
-        <!-- items grid (populated by JS) -->
-        <div id="artItemGrid" class="art-grid" style="display:none"></div>
-
-        <div class="palette-actions" style="gap:8px">
-          <button class="btn" id="artBackBtn" style="display:none">Back</button>
-          <button class="done" id="artAddBtn" disabled>Add to Canvas</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- html2canvas -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <!-- App JS -->
-  <script src="customization/customization.js"></script>
+  <script src="customization/customizationP1.js"></script>
+  <script src="customization/customizationP2.js"></script>
+  <script src="customization/customizationP3.js"></script>
 </body>
 </html>

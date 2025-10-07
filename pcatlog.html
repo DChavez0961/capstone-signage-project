@@ -1,14 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact Us - GC Tech</title>
-  <!-- fixed path: use forward slashes -->
-  <link rel="stylesheet" href="pcatalog/pcatalog.css"/>
+  <title>SignageHub - Catalog</title>
+  <style>
+    :root{
+      --bg:#f6f6f6;
+      --ink:#222;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --gold:#FFD700; /* single gold tone only */
+      --shadow:0 10px 24px rgba(0,0,0,.08); /* softer */
+      --drawerWpx: 360px;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg); color:var(--ink)}
+
+    /* ===== NAVBAR (UNCHANGED) ===== */
+    .navbar{
+      position:sticky; top:0; z-index:1000; height:70px; background:#000; border-bottom:1px solid var(--gold);
+      display:flex; align-items:center; justify-content:space-between; padding:0 6%;
+    }
+    .navbar img{height:42px; width:auto; display:block}
+    .navbar nav ul{display:flex; align-items:center; gap:24px; list-style:none}
+    .navbar nav a{color:#fff; text-decoration:none; padding:10px 14px; border-radius:20px; position:relative; transition:color .2s}
+    .navbar nav a:hover{color:var(--gold)}
+    .navbar nav a::after{content:''; position:absolute; left:12px; right:12px; bottom:6px; height:2px; background:var(--gold); transform:scaleX(0); transition:transform .2s}
+    .navbar nav a:hover::after{transform:scaleX(1)}
+
+    /* Profile (unchanged style; only added one menu item in HTML) */
+    .profile{position:relative; display:flex; align-items:center;}
+    .profile-toggle{display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:20px; padding:6px 10px; color:#fff; cursor:pointer;}
+    .profile-toggle:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+    .avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;background:#222;color:var(--gold);font-size:12px;}
+    .customer-name{color:#fff;font-weight:700;font-size:14px}
+    .chev{color:var(--gold); font-size:12px}
+    .profile-menu{position:absolute; right:0; top:120%; width:220px; background:#fff; border:1px solid var(--line); border-top:3px solid var(--gold); border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.08); display:none; overflow:hidden; z-index:1200;}
+    .profile.open .profile-menu{display:block}
+    .profile-menu a, .profile-menu button{display:flex; width:100%; text-align:left; padding:12px 14px; gap:8px; align-items:center; background:#fff; border:none; color:#111; font-size:14px; cursor:pointer; text-decoration:none;}
+    .profile-menu a:hover, .profile-menu button:hover{background:var(--gold); color:#000}
+
+    /* ===== LAYOUT ===== */
+    .container{display:flex;max-width:1600px;margin:18px auto 0;gap:24px;padding:24px 6%}
+
+    /* Sidebar (animate in) */
+    .sidebar{width:260px;background:var(--card);border-radius:12px;padding:20px;height:fit-content;border:1px solid var(--line);
+      opacity:0; transform:translateY(8px); transition:opacity .45s ease, transform .45s ease; box-shadow:0 10px 24px rgba(0,0,0,.04);}
+    .page-ready .sidebar{opacity:1; transform:translateY(0);}
+
+    .filter-section{margin-bottom:24px}
+    .filter-section h3{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+    .filter-list{list-style:none}
+    .filter-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}
+    .filter-item input[type="checkbox"]{width:16px;height:16px;accent-color:var(--gold)}
+    .filter-actions{display:flex;gap:8px;margin-top:8px}
+    .muted{color:var(--muted);font-size:12px}
+    .btn-apply,.btn-clear{cursor:pointer;padding:9px 12px;border-radius:10px;font-size:13px;font-weight:700;border:1px solid var(--line);background:#fff;color:#333; transition:transform .15s;}
+    .btn-apply{border:2px solid var(--gold);background:var(--gold);color:#000}
+    .btn-apply:hover,.btn-clear:hover{transform:translateY(-1px)}
+
+    .main-content{flex:1}
+
+    /* Top bar for search/sort */
+    .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+    .input, .select{height:40px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:0 12px;font-size:14px}
+    .input{flex:1;min-width:240px}
+    .select{min-width:180px}
+
+    /* Grid + product card reveal */
+    .products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .product-card{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--line);position:relative;transition:transform .2s,box-shadow .2s;cursor:pointer;
+      opacity:0; transform:translateY(14px)}
+    .product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .products-grid.animate-in .product-card{animation:cardIn .5s ease forwards}
+    .products-grid.animate-in .product-card:nth-child(1){animation-delay:.05s}
+    .products-grid.animate-in .product-card:nth-child(2){animation-delay:.10s}
+    .products-grid.animate-in .product-card:nth-child(3){animation-delay:.15s}
+    .products-grid.animate-in .product-card:nth-child(4){animation-delay:.20s}
+    .products-grid.animate-in .product-card:nth-child(5){animation-delay:.25s}
+    .products-grid.animate-in .product-card:nth-child(6){animation-delay:.30s}
+    .products-grid.animate-in .product-card:nth-child(7){animation-delay:.35s}
+    .products-grid.animate-in .product-card:nth-child(8){animation-delay:.40s}
+    @keyframes cardIn{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)}}
+    .product-card.hidden{display:none}
+
+    /* 💛 Bigger heart button */
+    .wishlist-btn{
+      position:absolute;top:10px;right:10px;background:#fff;border:1px solid var(--line);
+      width:42px;height:42px;border-radius:50%;
+      font-size:20px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;color:#var(--gold);
+      transition:background .15s, color .15s, transform .15s
+    }
+    .wishlist-btn{ color:var(--gold); } /* fix custom property usage */
+    .wishlist-btn:hover{ background:var(--gold); color:#000; transform:translateY(-1px) scale(1.05); }
+
+    .product-image{width:100%;height:220px;background:#fff;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line)}
+    .product-image::before{content:"📺";font-size:56px}
+
+    .product-info{padding:20px}
+    .product-name{font-weight:800;font-size:16px;margin-bottom:8px;line-height:1.35}
+    .meta{font-size:12px;color:var(--muted);margin-bottom:12px}
+    .product-price{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+    .current-price{font-weight:900;font-size:18px;color:#1f1f1f}
+
+    .btn-gold{
+      cursor:pointer;display:inline-flex;align-items:center;justify-content:center;width:100%;height:44px;
+      font-size:14px;font-weight:800;color:#000;border:2px solid var(--gold);border-radius:10px;background:var(--gold);
+      transition:transform .15s; text-decoration:none;
+    }
+    .btn-gold:hover{transform:scale(1.02)}
+    .btn-gold:active{transform:scale(0.99)}
+
+    .empty{text-align:center;color:var(--muted);padding:40px 0;display:none}
+
+    /* Cart FAB */
+    .cart-fab{
+      position:fixed;right:20px;bottom:20px;width:56px;height:56px;border-radius:50%;
+      background:var(--gold);color:#000;border:1px solid var(--gold);
+      display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.15);z-index:60;
+      transition:right .25s ease, transform .15s ease, opacity .3s ease;
+      opacity:0; transform:scale(.95);
+    }
+    .page-ready .cart-fab{opacity:1; transform:scale(1)}
+    .cart-fab .badge{
+      position:absolute;top:-6px;right:-6px;background:#000;color:var(--gold); /* fixed: was #var(--gold) */
+      font-weight:800;font-size:11px;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 6px;border:1px solid var(--gold)
+    }
+    body.drawer-active .cart-fab{ right: calc(20px + var(--drawerWpx)); }
+
+    /* Drawer */
+    .drawer{position:fixed;inset:0;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+    .drawer.open{opacity:1;pointer-events:auto;}
+    .drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.30); opacity:0; transition:opacity .25s ease;} /* softer */
+    .drawer.open .drawer-backdrop{opacity:1}
+    .drawer-panel{
+      position:absolute;right:0;top:0;height:100%;width:360px;max-width:92vw;background:var(--card);
+      box-shadow:-10px 0 30px rgba(0,0,0,.06);display:flex;flex-direction:column;
+      border-top-left-radius:12px;border-bottom-left-radius:12px;border-left:3px solid var(--gold);
+      transform:translateX(40px); transition:transform .25s ease;
+    }
+    .drawer.open .drawer-panel{transform:translateX(0)}
+    .drawer-header{padding:14px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+    .drawer-title{font-weight:900;color:#1f1f1f;text-align:center;font-size:18px}
+    .drawer-head-actions{display:flex;align-items:center;gap:10px}
+    .drawer-back-btn{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px; transition:transform .15s}
+    .drawer-back-btn:hover{transform:translateY(-1px)}
+    .drawer-body{padding:14px 18px;flex:1;overflow:auto}
+    .drawer-empty{color:var(--muted);text-align:center;padding:38px 0}
+    .cart-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+    .cart-thumb{width:52px;height:52px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+    .cart-name{font-size:15px;font-weight:800}
+    .cart-meta{font-size:13px;color:var(--muted)}
+    .cart-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px}
+    .line-total{margin-left:auto;font-weight:800;font-size:15px}
+    .cart-actions{margin-top:10px;display:flex;gap:10px}
+    .btn{padding:8px 11px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px; transition:transform .15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{border:2px solid var(--gold); background:var(--gold); color:#000}
+    .drawer-footer{padding:14px 18px;border-top:1px solid var(--line)}
+    .summary{display:grid;grid-template-columns:1fr auto;row-gap:8px;column-gap:12px;align-items:center;margin-bottom:12px;font-size:15px}
+    .summary .label{color:#555}
+    .summary .value{font-weight:800}
+    .checkout{all:unset;display:block}
+    .btn-cta{
+      position:relative;height:52px;border:3px solid var(--gold);background:var(--gold);color:#000;border-radius:12px;
+      font-size:12px; /* smaller text */
+      font-weight:900;letter-spacing:.2px;
+      box-shadow:0 4px 0 rgba(0,0,0,.85);
+      transform:translateY(0);transition:transform .15s, box-shadow .15s
+    }
+    .btn-cta:hover{ transform: translateY(-1px); box-shadow: 0 6px 0 rgba(0,0,0,.85); }
+    .btn-cta:active{ transform: translateY(0); box-shadow: 0 2px 0 rgba(0,0,0,.85); }
+    .btn-cta:focus-visible{ outline: 3px solid #000; outline-offset: 2px; }
+
+    /* Modals */
+    .modal{position:fixed;inset:0;z-index:70;opacity:0;pointer-events:none;transition:opacity .2s ease}
+    .modal.open{opacity:1;pointer-events:auto}
+    .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.35);opacity:0;transition:opacity .2s}
+    .modal.open .modal-backdrop{opacity:1}
+    .modal-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-46%) scale(.96);transition:transform .22s ease; width:min(720px,92vw);background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.18);border:1px solid var(--line)}
+    .modal.open .modal-card{transform:translate(-50%,-50%) scale(1)}
+    .modal-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#fff}
+    .modal-title{font-weight:900}
+    .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:#333}
+    .modal-body{padding:18px}
+    .modal-body.grid{display:grid;grid-template-columns:240px 1fr;gap:18px}
+    .modal-visual{height:180px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#000;font-size:50px;background:#fff;border:1px solid var(--line)}
+    .modal-info .name{font-weight:900;font-size:18px;margin-bottom:6px}
+    .modal-info .desc{font-size:14px;color:#4b5563;margin-bottom:10px}
+    .modal-price{display:flex;align-items:center;gap:10px;margin:8px 0}
+    .modal-meta{font-size:12px;color:#6b7280;margin-bottom:10px}
+    .modal-actions{display:flex;gap:8px}
+    .modal-actions .btn{flex:1}
+
+    /* Favorites modal list */
+    .fav-list .fav-row{display:flex;align-items:center;gap:16px;padding:24px 0;border-bottom:1px solid var(--line)}
+    .fav-icon{width:60px;height:60px;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:#fff;font-size:24px}
+    .fav-name{font-weight:800;font-size:18px}
+    .fav-meta{font-size:14px;color:#6b7280}
+    .fav-row .actions{margin-left:auto;display:flex;gap:12px}
+    .fav-list .price{font-weight:800;font-size:18px;margin-left:auto;margin-right:12px}
+    .fav-list .btn{font-size:16px;padding:12px 16px;border-radius:14px}
+    .fav-list .btn.primary{border-width:3px;min-width:140px;height:48px}
+
+    /* Toasts — moved left to avoid cart FAB */
+    .toast-wrap{
+      position:fixed;
+      left:20px;         /* moved from right to left */
+      right:auto;
+      bottom:20px;
+      z-index:80;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .toast{background:#000; color:#fff; border:1px solid var(--gold); padding:10px 12px; border-radius:10px; font-size:14px; box-shadow:0 10px 24px rgba(0,0,0,.15); opacity:0; transform:translateY(6px); transition:opacity .15s, transform .15s;}
+    .toast.show{ opacity:1; transform:translateY(0); }
+
+    @media(max-width:1200px){ .products-grid{grid-template-columns:repeat(2,1fr)} }
+    @media(max-width:900px){ .container{flex-direction:column} .sidebar{width:100%;order:2} .products-grid{grid-template-columns:1fr} }
+
+    /* Favorites modal extra padding */
+    #favoritesModal .modal-head{ padding:22px 28px; }
+    #favoritesModal .modal-body{ padding:26px 28px; }
+    #favoritesModal .fav-icon{ margin-left:2px; }
+    #favoritesModal .actions{ gap:14px; }
+  </style>
 </head>
 <body>
-  <!-- Navbar (unchanged) -->
+
+  <!-- Navbar (UNCHANGED) -->
   <header class="navbar">
     <img src="assets/images/Store Logo/logo.png" alt="GC Tech Logo" />
     <nav>
@@ -20,306 +245,604 @@
         <li><a href="contactus.html">Contact Us</a></li>
       </ul>
     </nav>
+
+    <!-- Profile + dropdown -->
+    <div class="profile" id="profile">
+      <button id="profileToggle" class="profile-toggle" aria-expanded="false" aria-haspopup="menu">
+        <div class="avatar" aria-hidden="true">JD</div>
+        <span class="customer-name">John Doe</span>
+        <span class="chev">▾</span>
+      </button>
+      <div class="profile-menu" id="profileMenu" role="menu" aria-hidden="true">
+        <!-- Profile link -->
+        <a href="cprofile.html" role="menuitem" data-menu="open-profile">Profile</a>
+        <a href="orders.html" role="menuitem">Orders</a>
+        <button type="button" data-menu="open-cart" role="menuitem">My Cart</button>
+        <button type="button" data-menu="open-favorites" role="menuitem" id="favMenuBtn">Favorites (0)</button>
+      </div>
+    </div>
   </header>
 
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="filter-section">
+        <h3>🔍 Filter</h3>
+        <div class="muted">Use checkboxes to filter products. Leave empty to see all.</div>
+      </div>
 
-  <!-- Title -->
-  <section class="catalog-hero">
-    <h1>Signage Catalog</h1>
-    <p>Explore premium indoor & outdoor signages built for visibility and durability.</p>
-  </section>
+      <div class="filter-section">
+        <h3>Location</h3>
+        <ul class="filter-list" id="filter-location">
+          <li class="filter-item"><input type="checkbox" value="Indoor" id="loc-indoor"> <label for="loc-indoor">Indoor</label></li>
+          <li class="filter-item"><input type="checkbox" value="Outdoor" id="loc-outdoor"> <label for="loc-outdoor">Outdoor</label></li>
+        </ul>
+      </div>
 
-  <!-- Filters (light/glassy background) -->
-  <section class="filters" aria-label="Signage filters">
-    <div class="filter-box">
-      <h3>Signage</h3>
-      <label for="categoryFilter">Category</label>
-      <select id="categoryFilter">
-        <option value="all" selected>All</option>
-        <option value="indoor">Indoor</option>
-        <option value="outdoor">Outdoor</option>
-        <option value="led">LED</option>
-        <option value="custom">Custom</option>
-      </select>
+      <div class="filter-section">
+        <h3>Category</h3>
+        <ul class="filter-list" id="filter-category">
+          <li class="filter-item"><input type="checkbox" value="Road Sign" id="cat-road"> <label for="cat-road">Road Sign</label></li>
+          <li class="filter-item"><input type="checkbox" value="Room Sign" id="cat-room"> <label for="cat-room">Room Sign</label></li>
+          <li class="filter-item"><input type="checkbox" value="Safety/Exit" id="cat-safety"> <label for="cat-safety">Safety/Exit</label></li>
+          <li class="filter-item"><input type="checkbox" value="Directional" id="cat-directional"> <label for="cat-directional">Directional</label></li>
+          <li class="filter-item"><input type="checkbox" value="Warning" id="cat-warning"> <label for="cat-warning">Warning</label></li>
+        </ul>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-clear" id="clearFilters">Clear</button>
+        <button class="btn-apply" id="applyFilters">Apply</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <!-- Toolbar -->
+      <div class="toolbar" aria-label="catalog tools">
+        <input id="searchInput" class="input" type="search" placeholder="Search products by name…" aria-label="Search products by name">
+        <select id="sortSelect" class="select" aria-label="Sort products">
+          <option value="none">Sort: Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A → Z</option>
+          <option value="name-desc">Name: Z → A</option>
+        </select>
+      </div>
+
+      <div class="products-grid" id="products">
+        <!-- PRODUCT CARDS -->
+        <div class="product-card" data-id="stop-24" data-name="Stop Sign Octagonal 24&quot; Aluminum (Reflective)" data-price="89" data-category="Road Sign" data-locations="Outdoor" data-visual="road" data-desc="Durable reflective stop sign ideal for road safety and private properties.">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Stop Sign to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Stop Sign Octagonal 24" Aluminum (Reflective)</div>
+            <div class="meta">Category: Road Sign • Location: Outdoor</div>
+            <div class="product-price"><span class="current-price">$89</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Stop Sign to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="restroom-ada" data-name="Restroom Sign 12&quot;×6&quot; Acrylic with Braille (ADA)" data-price="34" data-category="Room Sign" data-locations="Indoor" data-visual="room" data-desc="ADA-compliant restroom signage with braille and tactile text.
+">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Restroom Sign to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Restroom Sign 12"×6" Acrylic with Braille (ADA)</div>
+            <div class="meta">Category: Room Sign • Location: Indoor</div>
+            <div class="product-price"><span class="current-price">$34</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Restroom Sign to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="exit-led" data-name="Emergency Exit Sign LED (Battery Backup)" data-price="125" data-category="Safety/Exit" data-locations="Indoor" data-visual="safety" data-desc="Illuminated exit sign with battery backup for emergency compliance.">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Exit Sign to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Emergency Exit Sign LED (Battery Backup)</div>
+            <div class="meta">Category: Safety/Exit • Location: Indoor</div>
+            <div class="product-price"><span class="current-price">$125</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Exit Sign to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="dir-arrow" data-name="Directional Arrow Sign 18&quot;×6&quot; Aluminum" data-price="45" data-category="Directional" data-locations="Indoor,Outdoor" data-visual="directional" data-desc="Customizable arrow sign for navigation and facilities management">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Directional Arrow to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Directional Arrow Sign 18"×6" Aluminum</div>
+            <div class="meta">Category: Directional • Location: Indoor/Outdoor</div>
+            <div class="product-price"><span class="current-price">$45</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Directional Arrow to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="wet-floor" data-name="Caution Wet Floor Sign 30&quot; Folding Yellow Plastic" data-price="28" data-category="Warning" data-locations="Indoor" data-visual="warning" data-desc="Lightweight folding floor sign for slip hazard warnings.">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Wet Floor Sign to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Caution Wet Floor Sign 30" Folding Yellow Plastic</div>
+            <div class="meta">Category: Warning • Location: Indoor</div>
+            <div class="product-price"><span class="current-price">$28</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Wet Floor Sign to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="yield-36" data-name="Yield Sign Triangle 36&quot; Reflective Steel" data-price="165" data-category="Road Sign" data-locations="Outdoor" data-visual="road" data-desc="High-intensity reflective yield sign for road intersections.">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Yield Sign to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Yield Sign Triangle 36" Reflective Steel</div>
+            <div class="meta">Category: Road Sign • Location: Outdoor</div>
+            <div class="product-price"><span class="current-price">$165</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Yield Sign to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="nameplate" data-name="Office Door Name Plate 8&quot;×2&quot; Engraved Acrylic" data-price="19" data-category="Room Sign" data-locations="Indoor" data-visual="room" data-desc="Personalized engraved name plates for office doors and desks.">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Name Plate to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Office Door Name Plate 8"×2" Engraved Acrylic</div>
+            <div class="meta">Category: Room Sign • Location: Indoor</div>
+            <div class="product-price"><span class="current-price">$19</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Name Plate to cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="fire-locator" data-name="Fire Extinguisher Location Sign 12&quot;×12&quot; Glow-in-Dark" data-price="22" data-category="Safety/Fire" data-locations="Indoor" data-visual="safety" data-desc="Glow-in-dark fire extinguisher locator for visibility in low light.">
+          <div class="product-image"><button class="wishlist-btn" title="Add to favorites" aria-label="Add Fire Extinguisher Locator to favorites">♡</button></div>
+          <div class="product-info">
+            <div class="product-name">Fire Extinguisher Location Sign 12"×12" Glow-in-Dark</div>
+            <div class="meta">Category: Safety/Fire • Location: Indoor</div>
+            <div class="product-price"><span class="current-price">$22</span></div>
+            <button class="btn-gold add-to-cart" aria-label="Add Fire Extinguisher Locator to cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty" id="emptyState">No products match your filters.</div>
+    </main>
+  </div>
+
+  <!-- Cart Floating Button -->
+  <button class="cart-fab" id="cartFab" aria-label="Open cart">🛒 <span class="badge" id="cartCount">0</span></button>
+
+  <!-- Cart Drawer -->
+  <div class="drawer" id="cartDrawer" aria-hidden="true">
+    <div class="drawer-backdrop" data-close="drawer"></div>
+    <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="drawer-header">
+        <button class="drawer-back-btn" data-close="drawer" aria-label="Back">← Back</button>
+        <div class="drawer-title" id="cartTitle">Your Cart</div>
+        <div class="drawer-head-actions">
+          <button class="btn-gold btn-small" id="checkoutTop" aria-label="Checkout">Checkout</button>
+          <button class="modal-close" data-close="drawer" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="drawer-body" id="cartItems">
+        <div class="drawer-empty" id="cartEmpty">Your cart is empty.</div>
+      </div>
+      <div class="drawer-footer">
+        <div class="summary" id="cartSummary">
+          <div class="label">Items</div><div class="value" id="sumItems">0</div>
+          <div class="label">Subtotal</div><div class="value" id="sumSubtotal">$0</div>
+        </div>
+        <button class="checkout btn-gold btn-cta" id="checkoutBottom">Proceed to Checkout</button>
+      </div>
     </div>
+  </div>
 
-    <div class="filter-box">
-      <h3>Billboards</h3>
-      <label for="materialFilter">Materials</label>
-      <select id="materialFilter">
-        <option value="any" selected>Any</option>
-        <option value="aluminum">Aluminum</option>
-        <option value="vinyl">Vinyl</option>
-        <option value="pvc">PVC</option>
-        <option value="acrylic">Acrylic</option>
-      </select>
+  <!-- Product Modal -->
+  <div class="modal" id="productModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="modal"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Product</div>
+        <button class="modal-close" data-close="modal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body grid">
+        <div class="modal-visual" id="modalVisual">📺</div>
+        <div class="modal-info">
+          <div class="name" id="modalName"></div>
+          <div class="modal-meta" id="modalMeta"></div>
+          <div class="desc" id="modalDesc"></div>
+          <div class="modal-price"><span class="current-price" id="modalPrice"></span></div>
+          <div class="modal-actions">
+            <button class="btn" id="modalBuy">Buy Now</button>
+            <button class="btn primary" id="modalAdd">Add to Cart</button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="filter-box">
-      <h3>Street Signs</h3>
-      <label for="typeFilter">Type</label>
-      <select id="typeFilter">
-        <option value="all" selected>Any</option>
-        <option value="stop">Stop</option>
-        <option value="warning">Warning</option>
-        <option value="directional">Directional</option>
-        <option value="safety">Safety</option>
-      </select>
+  <!-- Favorites Modal -->
+  <div class="modal" id="favoritesModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="favorites"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="favTitle" style="width:min(760px,94vw);">
+      <div class="modal-head">
+        <div class="modal-title" id="favTitle">Favorites</div>
+        <button class="modal-close" data-close="favorites" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="favContainer" class="fav-list"></div>
+      </div>
     </div>
+  </div>
 
-    <div class="filter-box search-box">
-      <input id="searchInput" type="text" placeholder="Search products..." aria-label="Search products"/>
-      <button id="searchBtn" type="button">Search</button>
-    </div>
-  </section>
+  <!-- Toast container -->
+  <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Products (darker panel background) -->
-  <main class="catalog" id="catalog">
-    <div class="grid" id="catalogGrid">
+<script>
+(function(){
+  const $  = (q, r=document)=>r.querySelector(q);
+  const $$ = (q, r=document)=>Array.from(r.querySelectorAll(q));
 
-      <!-- STOP (outdoor / aluminum) -->
-      <article class="card"
-               data-type="stop"
-               data-category="outdoor"
-               data-material="aluminum">
-        <div class="card-media">
-          <img src="../assets/images/Products/stop-1.jpg" alt="Standard aluminum stop sign">
-          <span class="price">₱2,450</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Stop Sign (Aluminum)</h3>
-          <p class="meta">Reflective • 18&quot; x 18&quot; • Rust-proof</p>
-          <p class="desc">DOT-grade reflective film for day/night visibility. Pre-drilled for easy mounting.</p>
-        </div>
-      </article>
+  /* Mark page ready for entrance animations */
+  window.addEventListener('load', ()=>{
+    document.body.classList.add('page-ready');
+    $('#products')?.classList.add('animate-in');
+  });
 
-      <article class="card"
-               data-type="stop"
-               data-category="outdoor"
-               data-material="aluminum">
-        <div class="card-media">
-          <img src="../assets/images/Products/stop-2.jpg" alt="Heavy-duty stop sign with post">
-          <span class="price">₱4,990</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Stop Sign + Post</h3>
-          <p class="meta">HD post • Reflective • Outdoor</p>
-          <p class="desc">Complete kit with galvanized post and mounting hardware. Weather-resistant.</p>
-        </div>
-      </article>
+  /* ===== PROFILE ===== */
+  const profile = $('#profile'), profileToggle = $('#profileToggle'), profileMenu = $('#profileMenu');
+  function closeProfileMenu(){ profile.classList.remove('open'); profileToggle.setAttribute('aria-expanded','false'); profileMenu.setAttribute('aria-hidden','true'); }
+  function openProfileMenu(){ profile.classList.add('open'); profileToggle.setAttribute('aria-expanded','true'); profileMenu.setAttribute('aria-hidden','false'); }
+  function toggleProfileMenu(){ profile.classList.contains('open') ? closeProfileMenu() : openProfileMenu(); }
+  profileToggle.addEventListener('click', (e)=>{ e.stopPropagation(); toggleProfileMenu(); });
+  document.addEventListener('click', (e)=>{ if(!profile.contains(e.target)) closeProfileMenu(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeProfileMenu(); });
 
-      <!-- WARNING (indoor / pvc) -->
-      <article class="card"
-               data-type="warning"
-               data-category="indoor"
-               data-material="pvc">
-        <div class="card-media">
-          <img src="../assets/images/Products/warning-1.jpg" alt="Caution wet floor signage">
-          <span class="price">₱850</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Caution: Wet Floor</h3>
-          <p class="meta">Double-sided • Foldable</p>
-          <p class="desc">Lightweight and durable with high-contrast print for indoor safety reminders.</p>
-        </div>
-      </article>
+  /* ===== TOASTS ===== */
+  const toastWrap = $('#toastWrap');
+  function showToast(msg, timeout=1600){
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    toastWrap.appendChild(t);
+    requestAnimationFrame(()=> t.classList.add('show'));
+    setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=> t.remove(), 200); }, timeout);
+  }
 
-      <article class="card"
-               data-type="warning"
-               data-category="outdoor"
-               data-material="pvc">
-        <div class="card-media">
-          <img src="../assets/images/Products/warning-2.jpg" alt="High voltage warning board">
-          <span class="price">₱1,490</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">High Voltage</h3>
-          <p class="meta">PVC • UV print • 12&quot; x 18&quot;</p>
-          <p class="desc">Industrial board printed with fade-resistant inks for long-term use.</p>
-        </div>
-      </article>
+  /* ===== STORAGE UTIL ===== */
+  const storage = {
+    get(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch{ return fallback; } },
+    set(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch{} }
+  };
 
-      <!-- DIRECTIONAL (outdoor / vinyl) -->
-      <article class="card"
-               data-type="directional"
-               data-category="outdoor"
-               data-material="vinyl">
-        <div class="card-media">
-          <img src="../assets/images/Products/directional-1.jpg" alt="Directional arrow signage">
-          <span class="price">₱990</span>
+  /* ===== CART ===== */
+  let cart = storage.get('catalog_cart', []);
+  const cartCount  = $('#cartCount');
+  const cartDrawer = $('#cartDrawer');
+  const cartItems  = $('#cartItems');
+  const cartEmpty  = $('#cartEmpty');
+  const cartFab    = $('#cartFab');
+  const sumItemsEl = $('#sumItems');
+  const sumSubtotalEl = $('#sumSubtotal');
+
+  function formatUSD(n){ return `$${Number(n).toLocaleString(undefined,{minimumFractionDigits:0})}`; }
+  function iconFor(visual){ return ({road:'🛑',room:'🚻',safety:'🚨',directional:'➡️',warning:'⚠️'})[visual] || '📺'; }
+
+  function computeTotals(){
+    const items = cart.reduce((s,i)=>s+i.qty,0);
+    const subtotal = cart.reduce((s,i)=>s+(i.qty*i.price),0);
+    return {items, subtotal};
+  }
+
+  function updateCartUI(){
+    cartCount.textContent = cart.reduce((s,i)=>s+i.qty,0);
+    cartItems.innerHTML = '';
+    if(cart.length===0){
+      cartItems.appendChild(cartEmpty);
+      cartEmpty.style.display='block';
+    } else {
+      cartEmpty.style.display='none';
+      cart.forEach((item,idx)=>{
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        const lineTotal = item.qty * item.price;
+        row.innerHTML = `
+          <div class="cart-thumb">${iconFor(item.visual)}</div>
+          <div style="flex:1">
+            <div class="cart-name">${item.name}</div>
+            <div class="cart-meta">${item.category} • ${item.locations.join('/')}</div>
+            <div class="cart-row">
+              <div class="cart-meta">Unit: ${formatUSD(item.price)}</div>
+              <div class="cart-meta" aria-label="Quantity">
+                Qty:
+                <button class="btn" data-action="dec" data-idx="${idx}" aria-label="Decrease quantity">−</button>
+                <strong>${item.qty}</strong>
+                <button class="btn" data-action="inc" data-idx="${idx}" aria-label="Increase quantity">+</button>
+              </div>
+              <div class="line-total">Total: ${formatUSD(lineTotal)}</div>
+            </div>
+            <div class="cart-actions">
+              <button class="btn" data-action="remove" data-idx="${idx}">Remove</button>
+            </div>
+          </div>`;
+        cartItems.appendChild(row);
+      });
+    }
+    const {items, subtotal} = computeTotals();
+    sumItemsEl.textContent = items;
+    sumSubtotalEl.textContent = formatUSD(subtotal);
+    storage.set('catalog_cart', cart);
+  }
+
+  function addToCart(prod, qty=1){
+    const existing = cart.find(c=>c.id===prod.id);
+    if(existing){ existing.qty += qty; } else { cart.push({...prod, qty}); }
+    updateCartUI();
+    showToast('Added to cart');
+  }
+
+  /* Drawer controls */
+  function computeDrawerWidth(){
+    const panel = cartDrawer.querySelector('.drawer-panel');
+    const w = panel ? panel.offsetWidth : 360;
+    document.documentElement.style.setProperty('--drawerWpx', w + 'px');
+  }
+  function isDrawerOpen(){ return cartDrawer.classList.contains('open'); }
+  function openDrawer(){
+    cartDrawer.classList.add('open');
+    cartDrawer.setAttribute('aria-hidden','false');
+    computeDrawerWidth();
+    document.body.classList.add('drawer-active');
+  }
+  function closeDrawer(){
+    cartDrawer.classList.remove('open');
+    cartDrawer.setAttribute('aria-hidden','true');
+    document.body.classList.remove('drawer-active');
+  }
+  function toggleDrawer(){ isDrawerOpen() ? closeDrawer() : openDrawer(); }
+  cartFab.addEventListener('click', toggleDrawer);
+  window.addEventListener('resize', ()=>{ if(isDrawerOpen()) computeDrawerWidth(); });
+  cartDrawer.addEventListener('click',(e)=>{
+    if(e.target.dataset.close==='drawer') closeDrawer();
+    const btn = e.target.closest('button'); if(!btn) return;
+    const action = btn.dataset.action; const idx = Number(btn.dataset.idx);
+    if(Number.isInteger(idx)){
+      if(action==='inc') cart[idx].qty++;
+      if(action==='dec') cart[idx].qty = Math.max(1, cart[idx].qty-1);
+      if(action==='remove'){ cart.splice(idx,1); showToast('Removed from cart'); }
+      updateCartUI();
+    }
+  });
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='Escape'){
+      closeDrawer(); closeModal(); closeFavModal(); closeProfileMenu();
+    }
+  });
+
+  /* ===== PRODUCT MODAL ===== */
+  const modal = $('#productModal');
+  const mVisual = $('#modalVisual'), mName = $('#modalName'), mMeta = $('#modalMeta'),
+        mDesc = $('#modalDesc'), mPrice = $('#modalPrice');
+  let currentProduct = null;
+
+  function openModalFor(card){
+    const data = {
+      id: card.dataset.id,
+      name: card.dataset.name,
+      price: Number(card.dataset.price||0),
+      category: card.dataset.category || '',
+      locations: (card.dataset.locations||'').split(',').map(s=>s.trim()).filter(Boolean),
+      visual: card.dataset.visual || '',
+      desc: card.dataset.desc || ''
+    };
+    currentProduct = data;
+    mVisual.textContent = iconFor(data.visual);
+    mName.textContent   = data.name;
+    mMeta.textContent   = `${data.category} • ${data.locations.join('/')}`;
+    mDesc.textContent   = data.desc;
+    mPrice.textContent  = formatUSD(data.price);
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    $('#modalTitle').textContent = data.category || 'Product';
+  }
+  function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); currentProduct = null; }
+  modal.addEventListener('click',(e)=>{ if(e.target.dataset.close==='modal') closeModal(); });
+  document.querySelectorAll('.modal-close').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      if(e.target.dataset.close==='modal') closeModal();
+      if(e.target.dataset.close==='favorites') closeFavModal();
+      if(e.target.dataset.close==='drawer') closeDrawer();
+    });
+  });
+
+  /* Keep drawer closed on add/buy */
+  $('#modalAdd').addEventListener('click', ()=>{ if(currentProduct){ addToCart(currentProduct,1); }});
+  $('#modalBuy').addEventListener('click', ()=>{ if(currentProduct){ addToCart(currentProduct,1); }});
+
+  /* ===== FAVORITES ===== */
+  let favorites = new Set(storage.get('catalog_favs', []));
+  const favModal = $('#favoritesModal');
+  const favContainer = $('#favContainer');
+
+  function persistFavs(){ storage.set('catalog_favs', Array.from(favorites)); updateFavCountLabel(); }
+
+  function getProductDataById(id){
+    const card = document.querySelector(`.product-card[data-id="${CSS.escape(id)}"]`);
+    if(!card) return null;
+    return {
+      id,
+      name: card.dataset.name,
+      price: Number(card.dataset.price||0),
+      category: card.dataset.category || '',
+      locations: (card.dataset.locations||'').split(',').map(s=>s.trim()).filter(Boolean),
+      visual: card.dataset.visual || ''
+    };
+  }
+
+  function buildFavorites(){
+    favContainer.innerHTML = '';
+    const ids = Array.from(favorites);
+    if(ids.length===0){
+      const empty = document.createElement('div');
+      empty.className = 'drawer-empty';
+      empty.textContent = 'No favorites yet.';
+      favContainer.appendChild(empty);
+      return;
+    }
+    ids.forEach(id=>{
+      const data = getProductDataById(id);
+      if(!data) return;
+      const row = document.createElement('div');
+      row.className = 'fav-row';
+      row.innerHTML = `
+        <div class="fav-icon">${iconFor(data.visual)}</div>
+        <div>
+          <div class="fav-name">${data.name}</div>
+          <div class="fav-meta">${data.category} • ${data.locations.join('/')}</div>
         </div>
-        <div class="card-body">
-          <h3 class="title">Arrow Direction</h3>
-          <p class="meta">Vinyl on ACP • Indoor/Outdoor</p>
-          <p class="desc">Clear wayfinding arrows for malls, offices, and events. Custom colors available.</p>
+        <div class="price">${formatUSD(data.price)}</div>
+        <div class="actions">
+          <button class="btn" data-fav="view" data-id="${data.id}">View</button>
+          <button class="btn primary" data-fav="add" data-id="${data.id}">Add to Cart</button>
+          <button class="btn" data-fav="remove" data-id="${data.id}">Remove</button>
         </div>
-      </article>
+      `;
+      favContainer.appendChild(row);
+    });
+  }
 
-      <article class="card"
-               data-type="directional"
-               data-category="outdoor"
-               data-material="vinyl">
-        <div class="card-media">
-          <img src="../assets/images/Products/directional-2.jpg" alt="Parking directional sign">
-          <span class="price">₱1,250</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Parking Ahead</h3>
-          <p class="meta">Reflective vinyl • Outdoor</p>
-          <p class="desc">Highly visible parking guidance sign with reflective overlay for night use.</p>
-        </div>
-      </article>
+  function openFavModal(){ buildFavorites(); favModal.classList.add('open'); favModal.setAttribute('aria-hidden','false'); }
+  function closeFavModal(){ favModal.classList.remove('open'); favModal.setAttribute('aria-hidden','true'); }
+  favModal.addEventListener('click',(e)=>{ if(e.target.dataset.close==='favorites') closeFavModal(); });
+  $('#profileMenu').addEventListener('click',(e)=>{
+    const act = e.target?.dataset?.menu;
+    if(act==='open-cart'){ openDrawer(); closeProfileMenu(); }
+    if(act==='open-favorites'){ openFavModal(); closeProfileMenu(); }
+  });
 
-      <!-- SAFETY (indoor / acrylic) -->
-      <article class="card"
-               data-type="safety"
-               data-category="indoor"
-               data-material="acrylic">
-        <div class="card-media">
-          <img src="../assets/images/Products/safety-1.jpg" alt="Emergency exit signage">
-          <span class="price">₱1,650</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Emergency Exit (Glow)</h3>
-          <p class="meta">Photoluminescent • Acrylic</p>
-          <p class="desc">Glows in the dark; ideal for corridors and stairwells with low light.</p>
-        </div>
-      </article>
+  favContainer.addEventListener('click', (e)=>{
+    const id = e.target?.dataset?.id;
+    const act = e.target?.dataset?.fav;
+    if(!id || !act) return;
+    const card = document.querySelector(`.product-card[data-id="${CSS.escape(id)}"]`);
+    if(!card) return;
+    const data = getProductDataById(id);
+    if(act==='add'){ addToCart(data,1); }
+    if(act==='view'){ openModalFor(card); }
+    if(act==='remove'){ favorites.delete(id); persistFavs(); buildFavorites(); showToast('Removed from favorites'); }
+  });
 
-      <article class="card"
-               data-type="safety"
-               data-category="indoor"
-               data-material="pvc">
-        <div class="card-media">
-          <img src="../assets/images/Products/safety-2.jpg" alt="Fire extinguisher locator sign">
-          <span class="price">₱780</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Fire Extinguisher</h3>
-          <p class="meta">PVC • UV print • Indoor</p>
-          <p class="desc">Bold, high-contrast pointer to quickly locate fire extinguishers.</p>
-        </div>
-      </article>
+  function updateFavCountLabel(){
+    const favBtn = $('#favMenuBtn');
+    if(favBtn) favBtn.textContent = `Favorites (${favorites.size})`;
+  }
 
-      <!-- LED (led / acrylic) -->
-      <article class="card"
-               data-type="led"
-               data-category="led"
-               data-material="acrylic">
-        <div class="card-media">
-          <img src="../assets/images/Products/led Product.jpg" alt="Neon style LED sign">
-          <span class="price">₱6,900</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Neon-Style LED</h3>
-          <p class="meta">RGB/Single • 12V</p>
-          <p class="desc">Custom shapes and colors. Energy-efficient and eye-catching glow.</p>
-        </div>
-      </article>
+  /* ===== PRODUCT CARDS EVENTS ===== */
+  let cards = $$('.product-card');
 
-      <article class="card"
-               data-type="led"
-               data-category="led"
-               data-material="acrylic">
-        <div class="card-media">
-          <img src="../assets/images/Products/led-2.jpg" alt="LED lightbox">
-          <span class="price">₱5,400</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Slim Lightbox</h3>
-          <p class="meta">Edge-lit • Snap frame</p>
-          <p class="desc">Ultra-thin profile with uniform glow. Great for menus, posters, and ads.</p>
-        </div>
-      </article>
+  function attachCardEvents(card){
+    card.addEventListener('click', ()=> openModalFor(card));
+    const addBtn = card.querySelector('.add-to-cart');
+    if(addBtn){
+      addBtn.addEventListener('click',(ev)=>{
+        ev.stopPropagation();
+        const prod = {
+          id: card.dataset.id,
+          name: card.dataset.name,
+          price: Number(card.dataset.price||0),
+          category: card.dataset.category||'',
+          locations: (card.dataset.locations||'').split(',').map(s=>s.trim()).filter(Boolean),
+          visual: card.dataset.visual||''
+        };
+        addToCart(prod,1);
+      });
+    }
 
-      <!-- CUSTOM (custom / aluminum) -->
-      <article class="card"
-               data-type="custom"
-               data-category="custom"
-               data-material="aluminum">
-        <div class="card-media">
-          <img src="../assets/images/Products/3d-signage.jpg" alt="Stainless built up letters">
-          <span class="price">From ₱12,000</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">3D Built-Up Letters</h3>
-          <p class="meta">Stainless/Acrylic • LED optional</p>
-          <p class="desc">Premium 3D letters fabricated to your brand specs. Outdoor-ready.</p>
-        </div>
-      </article>
+    const wish = card.querySelector('.wishlist-btn');
+    if(wish){
+      wish.addEventListener('click',(ev)=>{
+        ev.stopPropagation();
+        const id = card.dataset.id;
+        const name = card.dataset.name || 'Item';
+        if(!favorites.has(id)){
+          favorites.add(id);
+          persistFavs();
+          wish.textContent = '♥';
+          setTimeout(()=>{ wish.textContent='♡'; }, 500);
+          showToast(`Added “${name}” to favorites`);
+        } else {
+          showToast(`“${name}” is already in favorites`);
+        }
+      });
+    }
+  }
+  cards.forEach(attachCardEvents);
 
-      <article class="card"
-               data-type="custom"
-               data-category="custom"
-               data-material="aluminum">
-        <div class="card-media">
-          <img src="../assets/images/Products/custom-2.jpg" alt="Brass logo signage">
-          <span class="price">Custom</span>
-        </div>
-        <div class="card-body">
-          <h3 class="title">Custom Logo Plate</h3>
-          <p class="meta">Brass/Aluminum • CNC/Laser</p>
-          <p class="desc">Make your logo stand out with precision-cut metals, brushed or mirror finish.</p>
-        </div>
-      </article>
+  /* ===== FILTERS / SEARCH / SORT ===== */
+  const locationChecks = $$('#filter-location input[type="checkbox"]');
+  const categoryChecks = $$('#filter-category input[type="checkbox"]');
+  const emptyState = $('#emptyState');
 
-    </div>
-  </main>
+  const searchInput = $('#searchInput');
+  const sortSelect  = $('#sortSelect');
 
-  <!-- Footer (single compact line) -->
-  <footer class="footer">
-    <p>
-      &copy; 2025 GC Tech. All rights reserved. |
-      <a href="../terms.html">Terms &amp; Conditions</a> |
-      <a href="../privacy.html">Privacy Policy</a>
-    </p>
-  </footer>
+  function selected(list){ return list.filter(i=>i.checked).map(i=>i.value); }
 
-  <!-- Tiny JS filter (type/category/material + search) -->
-  <script>
-    (function () {
-      const cards = Array.from(document.querySelectorAll('.card'));
-      const typeSel = document.getElementById('typeFilter');
-      const catSel  = document.getElementById('categoryFilter');
-      const matSel  = document.getElementById('materialFilter');
-      const search  = document.getElementById('searchInput');
-      const btn     = document.getElementById('searchBtn');
+  function applyFilters(){
+    const loc = selected(locationChecks), cat = selected(categoryChecks);
+    const q = (searchInput.value||'').trim().toLowerCase();
 
-      function matches(card, val, attr) {
-        return val === 'all' || val === 'any' || card.dataset[attr] === val;
-      }
+    let shown = 0;
+    cards.forEach(card=>{
+      const locations = (card.dataset.locations||'').split(',').map(s=>s.trim());
+      const category  = card.dataset.category;
+      const name      = (card.dataset.name||'').toLowerCase();
 
-      function textMatch(card, q) {
-        if (!q) return true;
-        const hay = (card.innerText || '').toLowerCase();
-        return hay.includes(q.toLowerCase());
-      }
+      const locOk = loc.length===0 || loc.some(v=>locations.includes(v));
+      const catOk = cat.length===0 || cat.includes(category);
+      const qOk   = q.length===0 || name.includes(q);
 
-      function applyFilters() {
-        const t = typeSel.value;
-        const c = catSel.value;
-        const m = matSel.value;
-        const q = search.value.trim();
+      const visible = locOk && catOk && qOk;
+      card.classList.toggle('hidden', !visible);
+      if(visible) shown++;
+    });
+    emptyState.style.display = shown===0 ? 'block' : 'none';
+  }
 
-        cards.forEach(card => {
-          const show =
-            matches(card, t, 'type') &&
-            matches(card, c, 'category') &&
-            matches(card, m, 'material') &&
-            textMatch(card, q);
+  function sortCards(){
+    const val = sortSelect.value;
+    const grid = $('#products');
+    const nodes = Array.from(grid.children);
 
-          card.style.display = show ? '' : 'none';
-        });
-      }
+    const getPrice = (el)=> Number(el.dataset.price||0);
+    const getName  = (el)=> (el.dataset.name||'').toLowerCase();
 
-      typeSel.addEventListener('change', applyFilters);
-      catSel.addEventListener('change', applyFilters);
-      matSel.addEventListener('change', applyFilters);
-      btn.addEventListener('click', applyFilters);
-      search.addEventListener('keydown', e => { if (e.key === 'Enter') applyFilters(); });
+    nodes.sort((a,b)=>{
+      if(val==='price-asc')  return getPrice(a)-getPrice(b);
+      if(val==='price-desc') return getPrice(b)-getPrice(a);
+      if(val==='name-asc')   return getName(a) > getName(b) ? 1 : -1;
+      if(val==='name-desc')  return getName(a) < getName(b) ? 1 : -1;
+      return 0;
+    });
 
-      applyFilters();
-    })();
-  </script>
+    nodes.forEach(n=> grid.appendChild(n));
+    cards = $$('.product-card');
+  }
+
+  $('#applyFilters').addEventListener('click', ()=>{ applyFilters(); });
+  [...locationChecks, ...categoryChecks].forEach(cb=> cb.addEventListener('change', applyFilters));
+  $('#clearFilters').addEventListener('click', ()=>{
+    [...locationChecks, ...categoryChecks].forEach(cb=> cb.checked=false);
+    searchInput.value = '';
+    sortSelect.value = 'none';
+    applyFilters();
+  });
+
+  searchInput.addEventListener('input', applyFilters);
+  sortSelect.addEventListener('change', ()=>{ sortCards(); applyFilters(); });
+
+  /* ===== Checkout ===== */
+  function goCheckout(){ window.location.href = 'checkout.html'; }
+  $('#checkoutTop').addEventListener('click', goCheckout);
+  $('#checkoutBottom').addEventListener('click', goCheckout);
+
+  /* Init */
+  updateCartUI();
+  favorites.forEach(id=>{
+    const btn = document.querySelector(`.product-card[data-id="${CSS.escape(id)}"] .wishlist-btn`);
+    if(btn){ btn.textContent = '♡'; }
+  });
+  updateFavCountLabel();
+  applyFilters();
+})();
+</script>
 </body>
 </html>
